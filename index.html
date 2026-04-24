@@ -1,0 +1,1709 @@
+<!DOCTYPE html>
+<html lang="es" translate="no">
+<head>
+<meta charset="UTF-8">
+<meta name="google" content="notranslate">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>WH Questions + Simple Past | COEDUCA</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0;
+      -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;
+      -webkit-tap-highlight-color: transparent; }
+  html, body { overscroll-behavior: none; }
+  body {
+    font-family: 'Arial Black', 'Helvetica', sans-serif;
+    background: #FFE66D;
+    background-image:
+      radial-gradient(circle at 10% 20%, rgba(255,107,157,0.15) 0 2px, transparent 3px),
+      radial-gradient(circle at 30% 60%, rgba(78,205,196,0.15) 0 2px, transparent 3px),
+      radial-gradient(circle at 70% 30%, rgba(255,107,157,0.15) 0 2px, transparent 3px),
+      radial-gradient(circle at 85% 80%, rgba(78,205,196,0.15) 0 2px, transparent 3px);
+    background-size: 40px 40px;
+    color: #1a1a1a; min-height: 100vh; padding: 16px;
+    line-height: 1.4;
+  }
+  input, textarea { -webkit-user-select: text; user-select: text; }
+
+  /* ============= POP ART BUTTONS ============= */
+  .btn {
+    display: inline-block; padding: 14px 24px; border: 3px solid #1a1a1a;
+    background: #FF6B9D; color: #fff; font-family: inherit; font-weight: 900;
+    font-size: 16px; text-transform: uppercase; cursor: pointer;
+    box-shadow: 5px 5px 0 #1a1a1a; transition: all 0.15s;
+    border-radius: 8px; letter-spacing: 1px;
+  }
+  .btn:hover { transform: translate(-2px,-2px); box-shadow: 7px 7px 0 #1a1a1a; }
+  .btn:active { transform: translate(3px,3px); box-shadow: 2px 2px 0 #1a1a1a; }
+  .btn.green  { background: #7ED957; }
+  .btn.blue   { background: #63C5DA; }
+  .btn.orange { background: #FF914D; }
+  .btn.purple { background: #B794F6; }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* ============= LOGIN ============= */
+  #login-overlay {
+    position: fixed; inset: 0; background: rgba(26,26,26,0.9);
+    z-index: 5000; display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .login-card {
+    background: #fff; border: 5px solid #1a1a1a; border-radius: 20px;
+    padding: 30px 24px; max-width: 420px; width: 100%;
+    box-shadow: 10px 10px 0 #FF6B9D; text-align: center;
+    animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  @keyframes popIn { 0% { transform: scale(0.3); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+  .login-card h1 { font-size: 28px; margin-bottom: 8px; color: #FF6B9D; text-shadow: 3px 3px 0 #1a1a1a; }
+  .login-card h2 { font-size: 14px; margin-bottom: 20px; color: #1a1a1a; }
+  .login-card input {
+    width: 100%; padding: 14px; border: 3px solid #1a1a1a; border-radius: 10px;
+    font-size: 18px; font-weight: bold; text-align: center; margin-bottom: 14px;
+    font-family: inherit;
+  }
+  .login-card input:focus { outline: none; background: #FFE66D; }
+  #login-status { margin: 10px 0; font-weight: bold; min-height: 22px; font-size: 14px; }
+  #login-status.ok { color: #2D9F4E; }
+  #login-status.err { color: #E63946; }
+
+  /* ============= HEADER ============= */
+  header {
+    background: #fff; border: 4px solid #1a1a1a; border-radius: 16px;
+    padding: 16px; margin-bottom: 20px; box-shadow: 6px 6px 0 #1a1a1a;
+    display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between;
+  }
+  header .info { flex: 1; min-width: 200px; }
+  header h1 { font-size: 22px; color: #FF6B9D; text-shadow: 2px 2px 0 #1a1a1a; margin-bottom: 4px; }
+  header .meta { font-size: 13px; color: #333; }
+  .score-badge {
+    background: #FFE66D; border: 3px solid #1a1a1a; border-radius: 12px;
+    padding: 8px 14px; font-weight: 900; font-size: 16px;
+    box-shadow: 3px 3px 0 #1a1a1a; min-width: 110px; text-align: center;
+  }
+  .score-badge small { display: block; font-size: 10px; color: #666; }
+
+  /* ============= EXERCISE CARDS ============= */
+  .exercise {
+    background: #fff; border: 4px solid #1a1a1a; border-radius: 16px;
+    padding: 20px; margin-bottom: 22px; box-shadow: 6px 6px 0 #1a1a1a;
+    position: relative; overflow: hidden;
+  }
+  .exercise::before {
+    content: attr(data-num); position: absolute; top: -6px; right: -6px;
+    background: #FF6B9D; color: #fff; border: 3px solid #1a1a1a;
+    width: 48px; height: 48px; border-radius: 50%; font-size: 22px;
+    display: flex; align-items: center; justify-content: center; font-weight: 900;
+    box-shadow: 2px 2px 0 #1a1a1a;
+  }
+  .exercise h2 {
+    font-size: 18px; margin-bottom: 6px; padding-right: 50px;
+    color: #1a1a1a; text-transform: uppercase;
+  }
+  .exercise .instr {
+    font-size: 13px; color: #555; margin-bottom: 16px; font-weight: normal;
+  }
+
+  /* ============= AUDIO ============= */
+  .audio-box {
+    background: #B794F6; border: 3px solid #1a1a1a; border-radius: 12px;
+    padding: 14px; margin-bottom: 14px; text-align: center;
+  }
+  .audio-box audio { width: 100%; margin-top: 8px; }
+
+  /* ============= INPUTS ============= */
+  .q-row { margin-bottom: 14px; padding: 10px; background: #f9f9f9;
+           border: 2px dashed #1a1a1a; border-radius: 10px; }
+  .q-row p { font-weight: bold; margin-bottom: 8px; font-size: 14px; }
+  .q-row input[type=text] {
+    width: 100%; padding: 10px; border: 2px solid #1a1a1a;
+    border-radius: 8px; font-family: inherit; font-weight: bold; font-size: 14px;
+  }
+  .q-row input[type=text]:focus { outline: none; background: #FFE66D; }
+  .q-row.correct { background: #C8F7C5; border-color: #2D9F4E; border-style: solid; }
+  .q-row.wrong   { background: #FFD6D6; border-color: #E63946; border-style: solid; }
+  .feedback { font-size: 12px; margin-top: 6px; font-weight: bold; }
+  .feedback.ok { color: #2D9F4E; }
+  .feedback.bad { color: #E63946; }
+
+  .options { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .opt {
+    padding: 8px 12px; border: 2px solid #1a1a1a; border-radius: 8px;
+    background: #fff; cursor: pointer; font-family: inherit; font-weight: bold;
+    font-size: 13px; transition: all 0.15s;
+  }
+  .opt:hover { background: #FFE66D; transform: translate(-1px,-1px); }
+  .opt.selected { background: #63C5DA; color: #fff; }
+
+  /* ============= WORD SEARCH ============= */
+  .ws-container { overflow-x: auto; padding: 8px 0; }
+  .ws-grid {
+    display: grid; gap: 2px; margin: 10px auto;
+    touch-action: none; width: max-content;
+  }
+  .ws-cell {
+    width: 30px; height: 30px; background: #fff; border: 2px solid #1a1a1a;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900; font-size: 14px; cursor: pointer; user-select: none;
+    border-radius: 4px;
+  }
+  .ws-cell.selecting { background: #FFE66D; }
+  .ws-cell.found { background: #7ED957; color: #1a1a1a; }
+  .ws-words { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; justify-content: center; }
+  .ws-word {
+    padding: 5px 10px; border: 2px solid #1a1a1a; border-radius: 6px;
+    background: #FFE66D; font-weight: 900; font-size: 13px;
+  }
+  .ws-word.done { background: #7ED957; text-decoration: line-through; opacity: 0.7; }
+
+  /* ============= DRAG & DROP ============= */
+  .dnd-bank {
+    display: flex; flex-wrap: wrap; gap: 8px; padding: 12px;
+    background: #FFE66D; border: 3px dashed #1a1a1a; border-radius: 10px;
+    margin-bottom: 14px; min-height: 60px;
+  }
+  .draggable {
+    padding: 10px 14px; background: #63C5DA; border: 3px solid #1a1a1a;
+    border-radius: 8px; font-weight: 900; cursor: grab; font-size: 14px;
+    box-shadow: 2px 2px 0 #1a1a1a; touch-action: none;
+  }
+  .draggable.dragging { opacity: 0.5; cursor: grabbing; }
+  .dnd-target {
+    min-height: 52px; padding: 10px; margin-bottom: 8px;
+    border: 3px dashed #1a1a1a; border-radius: 10px; background: #fff;
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  }
+  .dnd-target.over { background: #B794F6; }
+  .dnd-target .label { font-weight: 900; color: #FF6B9D; min-width: 90px; font-size: 14px; }
+  .dnd-ghost {
+    position: fixed; pointer-events: none; z-index: 10000;
+    opacity: 0.9; transform: translate(-50%, -50%);
+  }
+
+  /* ============= MATCH EMOJI ============= */
+  .match-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px; margin-top: 10px;
+  }
+  .match-card {
+    background: #fff; border: 3px solid #1a1a1a; border-radius: 10px;
+    padding: 10px; text-align: center; cursor: pointer;
+    box-shadow: 3px 3px 0 #1a1a1a; transition: all 0.15s;
+  }
+  .match-card:hover { transform: translate(-2px,-2px); box-shadow: 5px 5px 0 #1a1a1a; }
+  .match-card.selected { background: #FFE66D; }
+  .match-card.matched { background: #7ED957; pointer-events: none; }
+  .match-card .emoji { font-size: 40px; display: block; margin-bottom: 6px; }
+  .match-card .txt { font-weight: 900; font-size: 13px; }
+
+  /* ============= REORDER ============= */
+  .reorder-list {
+    display: flex; flex-wrap: wrap; gap: 6px; padding: 12px;
+    background: #FFE66D; border: 3px dashed #1a1a1a; border-radius: 10px;
+    min-height: 50px; margin-bottom: 8px;
+  }
+  .word-chip {
+    padding: 8px 12px; background: #FF914D; border: 2px solid #1a1a1a;
+    border-radius: 8px; font-weight: 900; cursor: grab; font-size: 14px;
+    box-shadow: 2px 2px 0 #1a1a1a; touch-action: none; color: #fff;
+  }
+  .word-chip.dragging { opacity: 0.5; }
+
+  /* ============= IMAGES ============= */
+  .img-thumb {
+    width: 80px; height: 80px; border: 3px solid #1a1a1a; border-radius: 8px;
+    object-fit: cover; background: #fff;
+  }
+  .img-large {
+    width: 100%; max-width: 200px; aspect-ratio: 1/1;
+    border: 3px solid #1a1a1a; border-radius: 10px; object-fit: cover; background: #fff;
+    margin: 0 auto 10px; display: block;
+  }
+
+  /* ============= GAME: AHORCADO ============= */
+  #game-section {
+    background: #1a1a1a; color: #fff; border: 4px solid #FF6B9D;
+    border-radius: 16px; padding: 20px; margin-bottom: 22px;
+    box-shadow: 6px 6px 0 #FF6B9D; text-align: center;
+  }
+  #game-section h2 { color: #FFE66D; text-shadow: 3px 3px 0 #FF6B9D; font-size: 22px; margin-bottom: 12px; }
+  .hangman-svg {
+    width: 180px; height: 200px; margin: 10px auto; display: block;
+    background: #fff; border: 3px solid #FFE66D; border-radius: 10px;
+  }
+  .hangman-word {
+    font-family: 'Courier New', monospace; font-size: 28px; letter-spacing: 8px;
+    margin: 14px 0; font-weight: 900; color: #FFE66D;
+  }
+  .hangman-hint { color: #B794F6; font-style: italic; margin-bottom: 10px; font-size: 13px; }
+  .letters-grid {
+    display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px;
+    max-width: 400px; margin: 12px auto;
+  }
+  .letter-btn {
+    padding: 8px; background: #FFE66D; color: #1a1a1a; border: 2px solid #1a1a1a;
+    border-radius: 6px; font-weight: 900; cursor: pointer; font-family: inherit;
+    font-size: 14px; transition: all 0.1s;
+  }
+  .letter-btn:hover { background: #7ED957; }
+  .letter-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .letter-btn.correct { background: #7ED957; color: #fff; }
+  .letter-btn.wrong { background: #E63946; color: #fff; }
+  #game-status { font-size: 16px; font-weight: 900; margin: 10px 0; min-height: 24px; }
+
+  /* ============= FOOTER ============= */
+  footer {
+    text-align: center; padding: 20px 0; background: #fff;
+    border: 4px solid #1a1a1a; border-radius: 16px; margin-bottom: 80px;
+    box-shadow: 6px 6px 0 #1a1a1a;
+  }
+
+  @media (max-width: 480px) {
+    body { padding: 10px; }
+    .exercise { padding: 16px 14px; }
+    .exercise h2 { font-size: 16px; padding-right: 40px; }
+    .exercise::before { width: 38px; height: 38px; font-size: 18px; }
+    header h1 { font-size: 18px; }
+    .ws-cell { width: 26px; height: 26px; font-size: 12px; }
+    .letters-grid { grid-template-columns: repeat(6, 1fr); }
+    .hangman-svg { width: 150px; height: 170px; }
+    .btn { font-size: 14px; padding: 12px 18px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============= LOGIN ============= -->
+<div id="login-overlay">
+  <div class="login-card">
+    <h1>WH QUESTIONS</h1>
+    <h2>Simple Past · A1+ · COEDUCA</h2>
+    <p style="font-size:13px;margin-bottom:12px;">Ingresa tu NIE para comenzar</p>
+    <input type="text" id="nie-input" placeholder="NIE" inputmode="numeric" autocomplete="off">
+    <div id="login-status"></div>
+    <button class="btn green" id="btn-login">Entrar</button>
+    <br><br>
+    <button class="btn blue" id="btn-add-partner" style="font-size:12px;padding:10px 16px;">+ Agregar compañero</button>
+    <div id="partner-area" style="display:none;margin-top:12px;">
+      <input type="text" id="partner-input" placeholder="NIE del compañero" inputmode="numeric">
+      <div id="partner-status" style="font-size:12px;font-weight:bold;min-height:18px;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============= APP ============= -->
+<div id="app" style="display:none;">
+
+  <header>
+    <div class="info">
+      <h1>WH Questions + Simple Past</h1>
+      <div class="meta" id="student-meta"></div>
+    </div>
+    <div class="score-badge">
+      <small>PUNTAJE</small>
+      <span id="score-display">0 / 10</span>
+    </div>
+  </header>
+
+  <!-- ============ EJ 1: Audio + Fill ============ -->
+  <div class="exercise" data-num="1">
+    <h2>Listen & Complete</h2>
+    <p class="instr">Escucha el audio y completa las oraciones con la palabra WH correcta (What, Who, When, Where, How)</p>
+    <div class="audio-box">
+      <strong>Audio: WH Questions</strong>
+      <audio controls preload="auto">
+        <source src="files/wh.mp3" type="audio/mpeg">
+      </audio>
+    </div>
+    <div id="ex1-questions"></div>
+    <button class="btn green" onclick="checkEx1()">Revisar</button>
+  </div>
+
+  <!-- ============ EJ 2: Match WH word with use ============ -->
+  <div class="exercise" data-num="2">
+    <h2>Match WH-Word with Meaning</h2>
+    <p class="instr">Arrastra cada palabra WH a su significado en español</p>
+    <div id="ex2-bank" class="dnd-bank"></div>
+    <div id="ex2-targets"></div>
+    <button class="btn green" onclick="checkEx2()">Revisar</button>
+  </div>
+
+  <!-- ============ EJ 3: Simple past form - fill blanks ============ -->
+  <div class="exercise" data-num="3">
+    <h2>Simple Past Form</h2>
+    <p class="instr">Completa con el verbo en pasado simple</p>
+    <div id="ex3-questions"></div>
+    <button class="btn green" onclick="checkEx3()">Revisar</button>
+  </div>
+
+  <!-- ============ EJ 4: Reorder sentence ============ -->
+  <div class="exercise" data-num="4">
+    <h2>Reorder the Question</h2>
+    <p class="instr">Arrastra las palabras para formar la pregunta correctamente</p>
+    <div id="ex4-questions"></div>
+    <button class="btn green" onclick="checkEx4()">Revisar</button>
+  </div>
+
+  <!-- ============ EJ 5: Match image with question ============ -->
+  <div class="exercise" data-num="5">
+    <h2>Match the Image with the WH-Question</h2>
+    <p class="instr">Observa la imagen y escoge la pregunta correcta</p>
+    <div id="ex5-questions"></div>
+    <button class="btn green" onclick="checkEx5()">Revisar</button>
+  </div>
+
+  <!-- ============ EJ 6: Word Search ============ -->
+  <div class="exercise" data-num="6">
+    <h2>Word Search</h2>
+    <p class="instr">Encuentra las palabras WH y verbos en pasado. Arrastra sobre la cuadrícula.</p>
+    <div class="ws-container">
+      <div id="ex6-grid" class="ws-grid"></div>
+    </div>
+    <div id="ex6-wordlist" class="ws-words"></div>
+    <p style="text-align:center;margin-top:10px;font-size:13px;">
+      <strong>Encontradas: <span id="ws-count">0</span> / <span id="ws-total">0</span></strong>
+    </p>
+  </div>
+
+  <!-- ============ EJ 7: Emparejar emoji ============ -->
+  <div class="exercise" data-num="7">
+    <h2>Match Emoji with WH-Answer</h2>
+    <p class="instr">Empareja cada emoji con la palabra WH que responde</p>
+    <div id="ex7-grid" class="match-grid"></div>
+    <p style="text-align:center;margin-top:10px;font-size:13px;">
+      <strong>Emparejadas: <span id="match-count">0</span> / 5</strong>
+    </p>
+  </div>
+
+  <!-- ============ EJ 8: Answer questions about image ============ -->
+  <div class="exercise" data-num="8">
+    <h2>Answer the Questions</h2>
+    <p class="instr">Observa la imagen y responde la pregunta escogiendo la respuesta correcta en pasado simple</p>
+    <div id="ex8-questions"></div>
+    <button class="btn green" onclick="checkEx8()">Revisar</button>
+  </div>
+
+  <!-- ============ JUEGO: AHORCADO ============ -->
+  <div id="game-section">
+    <h2>Hangman Game</h2>
+    <p style="margin-bottom:8px;font-size:13px;">Adivina el verbo en pasado simple. 6 errores y pierdes.</p>
+    <div class="hangman-hint" id="hangman-hint"></div>
+    <svg class="hangman-svg" viewBox="0 0 200 220" id="hangman-svg">
+      <line x1="10" y1="210" x2="120" y2="210" stroke="#1a1a1a" stroke-width="5"/>
+      <line x1="40" y1="210" x2="40" y2="20" stroke="#1a1a1a" stroke-width="5"/>
+      <line x1="40" y1="20" x2="130" y2="20" stroke="#1a1a1a" stroke-width="5"/>
+      <line x1="130" y1="20" x2="130" y2="40" stroke="#1a1a1a" stroke-width="5"/>
+      <g id="hangman-body" style="display:none;">
+        <circle id="hm-head" cx="130" cy="60" r="20" stroke="#1a1a1a" stroke-width="4" fill="none" style="display:none;"/>
+        <line id="hm-body" x1="130" y1="80" x2="130" y2="140" stroke="#1a1a1a" stroke-width="4" style="display:none;"/>
+        <line id="hm-arm1" x1="130" y1="100" x2="105" y2="120" stroke="#1a1a1a" stroke-width="4" style="display:none;"/>
+        <line id="hm-arm2" x1="130" y1="100" x2="155" y2="120" stroke="#1a1a1a" stroke-width="4" style="display:none;"/>
+        <line id="hm-leg1" x1="130" y1="140" x2="110" y2="170" stroke="#1a1a1a" stroke-width="4" style="display:none;"/>
+        <line id="hm-leg2" x1="130" y1="140" x2="150" y2="170" stroke="#1a1a1a" stroke-width="4" style="display:none;"/>
+      </g>
+    </svg>
+    <div class="hangman-word" id="hangman-word"></div>
+    <div id="game-status"></div>
+    <div class="letters-grid" id="letters-grid"></div>
+    <button class="btn orange" id="btn-restart-game" style="display:none;" onclick="initHangman()">Nueva palabra</button>
+  </div>
+
+  <!-- ============ FOOTER ============ -->
+  <footer>
+    <button class="btn purple" id="btn-pdf">Descargar PDF para Classroom</button>
+    <p style="font-size:12px;margin-top:12px;color:#666;">Profesor: José Eliseo Martínez · COEDUCA</p>
+  </footer>
+
+</div>
+
+<!-- ============= RIGO + STUDENTS ============= -->
+<script src="students.js"></script>
+<script src="rigo.js"></script>
+<rigo-mascot></rigo-mascot>
+
+<script>
+/* ============================================
+   BLOQUEO COPY / PASTE / CONTEXT / SELECCIÓN
+   ============================================ */
+['contextmenu','copy','paste','cut','selectstart'].forEach(ev => {
+  document.addEventListener(ev, e => {
+    if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault();
+  });
+});
+
+/* ============================================
+   CONFIG GENERAL
+   ============================================ */
+const STORAGE_KEY = 'wh_simplepast_v1';
+
+const state = {
+  student: null, partner: null, version: 'A',
+  answers: {}, scores: {}, extraPoints: 0,
+  gameFinished: false, hangmanDone: false
+};
+
+// Selección de versión A/B (anti-trampa)
+function getVersion() {
+  const saved = localStorage.getItem(STORAGE_KEY + '_version');
+  if (saved === 'A' || saved === 'B') return saved;
+  const v = Math.random() < 0.5 ? 'A' : 'B';
+  localStorage.setItem(STORAGE_KEY + '_version', v);
+  return v;
+}
+
+/* ============================================
+   PERSISTENCIA
+   ============================================ */
+function saveState() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      student: state.student, partner: state.partner,
+      answers: state.answers, scores: state.scores,
+      extraPoints: state.extraPoints, gameFinished: state.gameFinished
+    }));
+  } catch (e) {}
+}
+function loadState() {
+  try {
+    const d = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    if (d) Object.assign(state, d);
+  } catch (e) {}
+}
+
+/* ============================================
+   LOGIN
+   ============================================ */
+document.getElementById('btn-login').addEventListener('click', doLogin);
+document.getElementById('nie-input').addEventListener('keypress', e => { if (e.key === 'Enter') doLogin(); });
+document.getElementById('btn-add-partner').addEventListener('click', () => {
+  document.getElementById('partner-area').style.display = 'block';
+  document.getElementById('partner-input').focus();
+});
+document.getElementById('partner-input').addEventListener('input', e => {
+  const v = e.target.value.trim();
+  const st = document.getElementById('partner-status');
+  if (!v) { st.textContent = ''; return; }
+  if (STUDENTS[v]) {
+    st.textContent = '✓ ' + STUDENTS[v].name;
+    st.style.color = '#2D9F4E';
+    state.partner = { nie: v, ...STUDENTS[v] };
+  } else {
+    st.textContent = 'NIE no encontrado';
+    st.style.color = '#E63946';
+    state.partner = null;
+  }
+});
+
+function doLogin() {
+  const nie = document.getElementById('nie-input').value.trim();
+  const st = document.getElementById('login-status');
+  if (!nie) { st.textContent = 'Escribe tu NIE'; st.className = 'err'; return; }
+  if (!STUDENTS[nie]) { st.textContent = 'NIE no encontrado'; st.className = 'err'; return; }
+  state.student = { nie, ...STUDENTS[nie] };
+  st.textContent = '✓ ' + state.student.name;
+  st.className = 'ok';
+  saveState();
+  setTimeout(() => {
+    document.getElementById('login-overlay').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    initApp();
+    if (window.rigo) rigo.loginSuccess(state.student.name.split(' ')[0]);
+  }, 700);
+}
+
+/* ============================================
+   INIT APP
+   ============================================ */
+function initApp() {
+  state.version = getVersion();
+  loadState();
+  document.getElementById('student-meta').innerHTML =
+    `<strong>${state.student.name}</strong> · ${state.student.grade} · NIE: ${state.student.nie}` +
+    (state.partner ? `<br>Compañero: <strong>${state.partner.name}</strong> · NIE: ${state.partner.nie}` : '');
+
+  renderEx1(); renderEx2(); renderEx3(); renderEx4();
+  renderEx5(); renderEx6(); renderEx7(); renderEx8();
+  initHangman();
+  updateScore();
+}
+
+/* ============================================
+   DATA - Versiones A y B
+   ============================================ */
+const DATA = {
+  // EJ1 - audio fill (WH word)
+  ex1: {
+    A: [
+      { q: '___ did you do last summer?', a: 'what' },
+      { q: '___ did Roberto go after school?', a: 'where' },
+      { q: '___ did you cut your boyfriend?', a: 'when' },
+      { q: '___ far along are you in the project?', a: 'how' }
+    ],
+    B: [
+      { q: '___ did you do last summer?', a: 'what' },
+      { q: '___ did Roberto go after school?', a: 'where' },
+      { q: '___ did you cut your boyfriend?', a: 'when' },
+      { q: '___ far along are you in the project?', a: 'how' }
+    ]
+  },
+  // EJ2 - match WH word to meaning
+  ex2: {
+    A: [
+      { word: 'WHAT', mean: '¿Qué?' },
+      { word: 'WHO', mean: '¿Quién?' },
+      { word: 'WHEN', mean: '¿Cuándo?' },
+      { word: 'WHERE', mean: '¿Dónde?' },
+      { word: 'HOW', mean: '¿Cómo?' }
+    ],
+    B: [
+      { word: 'WHAT', mean: '¿Qué cosa?' },
+      { word: 'WHO', mean: '¿Qué persona?' },
+      { word: 'WHEN', mean: '¿En qué momento?' },
+      { word: 'WHERE', mean: '¿En qué lugar?' },
+      { word: 'HOW', mean: '¿De qué manera?' }
+    ]
+  },
+  // EJ3 - past simple verb fill
+  ex3: {
+    A: [
+      { q: 'She ___ (go) to the park yesterday.', a: 'went' },
+      { q: 'They ___ (play) soccer last Sunday.', a: 'played' },
+      { q: 'I ___ (eat) pizza for dinner.', a: 'ate' },
+      { q: 'He ___ (study) English last night.', a: 'studied' }
+    ],
+    B: [
+      { q: 'We ___ (watch) a movie last night.', a: 'watched' },
+      { q: 'She ___ (write) a letter yesterday.', a: 'wrote' },
+      { q: 'They ___ (run) in the park.', a: 'ran' },
+      { q: 'I ___ (read) a book last week.', a: 'read' }
+    ]
+  },
+  // EJ4 - reorder
+  ex4: {
+    A: [
+      { words: ['What','did','you','eat','yesterday','?'], answer: 'What did you eat yesterday ?' },
+      { words: ['Where','did','she','go','last','night','?'], answer: 'Where did she go last night ?' },
+      { words: ['Who','called','you','this','morning','?'], answer: 'Who called you this morning ?' }
+    ],
+    B: [
+      { words: ['When','did','they','arrive','home','?'], answer: 'When did they arrive home ?' },
+      { words: ['How','did','he','fix','the','car','?'], answer: 'How did he fix the car ?' },
+      { words: ['What','did','Maria','buy','yesterday','?'], answer: 'What did Maria buy yesterday ?' }
+    ]
+  },
+  // EJ5 - image + question (choose correct WH)
+  ex5: {
+    A: [
+      {
+        img: 'boyeatingpizza.jpg', desc: 'a boy eating pizza',
+        options: ['What did he eat?', 'Where did he eat?', 'When did he eat?'],
+        correct: 0
+      },
+      {
+        img: 'girlreadingbook.jpg', desc: 'a girl reading a book',
+        options: ['How did she read?', 'What did she read?', 'Who did she read?'],
+        correct: 1
+      },
+      {
+        img: 'threeboysplayingcoccer.jpg', desc: 'three boys playing soccer',
+        options: ['When did they play?', 'What did they play?', 'Who played alone?'],
+        correct: 1
+      }
+    ],
+    B: [
+      {
+        img: 'boydrinkinglemonade.jpg', desc: 'a boy drinking lemonade',
+        options: ['What did he drink?', 'Who drank water?', 'Where did he sleep?'],
+        correct: 0
+      },
+      {
+        img: 'sheteacherteachingthealphabet.jpg', desc: 'a teacher teaching the alphabet',
+        options: ['What did the teacher teach?', 'When did she dance?', 'Where did they eat?'],
+        correct: 0
+      },
+      {
+        img: 'girlrunning.jpg', desc: 'a girl running',
+        options: ['Who ate pizza?', 'What did she do?', 'Where did he sleep?'],
+        correct: 1
+      }
+    ]
+  },
+  // EJ6 - word search
+  ex6: {
+    A: ['WHAT','WHO','WHEN','WHERE','HOW','WENT','ATE','RAN'],
+    B: ['WHAT','WHO','WHEN','WHERE','HOW','PLAYED','SAW','READ']
+  },
+  // EJ7 - match emoji
+  ex7: {
+    A: [
+      { emoji: '👤', word: 'WHO', answer: 'a person' },
+      { emoji: '📅', word: 'WHEN', answer: 'a date/time' },
+      { emoji: '📍', word: 'WHERE', answer: 'a place' },
+      { emoji: '❓', word: 'WHAT', answer: 'a thing' },
+      { emoji: '🔧', word: 'HOW', answer: 'a method' }
+    ],
+    B: [
+      { emoji: '🧑', word: 'WHO', answer: 'a person' },
+      { emoji: '⏰', word: 'WHEN', answer: 'a time' },
+      { emoji: '🗺️', word: 'WHERE', answer: 'a location' },
+      { emoji: '📦', word: 'WHAT', answer: 'an object' },
+      { emoji: '🛠️', word: 'HOW', answer: 'a way' }
+    ]
+  },
+  // EJ8 - image + answer in past simple
+  ex8: {
+    A: [
+      {
+        img: 'babyboycrying.jpg',
+        q: 'What did the baby do?',
+        options: ['He sang a song.', 'He cried.', 'He danced.'],
+        correct: 1
+      },
+      {
+        img: 'boyandgirlcooking.jpg',
+        q: 'What did they do together?',
+        options: ['They cooked.', 'They slept.', 'They ran.'],
+        correct: 0
+      },
+      {
+        img: 'whitecatsleeping.jpg',
+        q: 'What did the cat do?',
+        options: ['It jumped.', 'It ate fish.', 'It slept.'],
+        correct: 2
+      }
+    ],
+    B: [
+      {
+        img: 'boylisteningwithheadphones.jpg',
+        q: 'What did the boy do?',
+        options: ['He studied math.', 'He listened to music.', 'He ran a race.'],
+        correct: 1
+      },
+      {
+        img: 'girlreadingbook.jpg',
+        q: 'What did the girl do?',
+        options: ['She read a book.', 'She painted.', 'She jumped.'],
+        correct: 0
+      },
+      {
+        img: 'threeboysplayingcoccer.jpg',
+        q: 'What did the three boys do?',
+        options: ['They swam.', 'They cooked.', 'They played soccer.'],
+        correct: 2
+      }
+    ]
+  }
+};
+
+/* ============================================
+   EJ 1 - AUDIO FILL
+   ============================================ */
+function renderEx1() {
+  const data = DATA.ex1[state.version];
+  const host = document.getElementById('ex1-questions');
+  host.innerHTML = data.map((it, i) => `
+    <div class="q-row" id="ex1-${i}">
+      <p>${i+1}. ${it.q}</p>
+      <input type="text" data-i="${i}" value="${state.answers['ex1-'+i] || ''}" placeholder="Escribe la palabra WH">
+    </div>
+  `).join('');
+  host.querySelectorAll('input').forEach(inp => {
+    inp.addEventListener('input', e => {
+      state.answers['ex1-'+e.target.dataset.i] = e.target.value;
+      saveState();
+    });
+  });
+}
+function checkEx1() {
+  const data = DATA.ex1[state.version];
+  let correct = 0;
+  data.forEach((it, i) => {
+    const val = (state.answers['ex1-'+i] || '').trim().toLowerCase();
+    const row = document.getElementById('ex1-'+i);
+    row.classList.remove('correct','wrong');
+    const old = row.querySelector('.feedback'); if (old) old.remove();
+    const fb = document.createElement('div');
+    fb.className = 'feedback';
+    if (val === it.a) {
+      row.classList.add('correct'); fb.classList.add('ok'); fb.textContent = '✓ Correcto';
+      correct++;
+    } else {
+      row.classList.add('wrong'); fb.classList.add('bad'); fb.textContent = '✗ Respuesta: ' + it.a.toUpperCase();
+    }
+    row.appendChild(fb);
+  });
+  state.scores.ex1 = correct / data.length;
+  saveState(); updateScore();
+  if (correct === data.length) { rigo && rigo.cheer(); }
+  else if (correct === 0) { rigo && rigo.comfort(); }
+}
+
+/* ============================================
+   EJ 2 - DRAG & DROP WH MATCH
+   ============================================ */
+function renderEx2() {
+  const data = DATA.ex2[state.version];
+  const bank = document.getElementById('ex2-bank');
+  const targets = document.getElementById('ex2-targets');
+
+  const shuffled = [...data].sort(() => Math.random() - 0.5);
+  bank.innerHTML = shuffled.map(d =>
+    `<div class="draggable" draggable="true" data-word="${d.word}">${d.word}</div>`
+  ).join('');
+
+  targets.innerHTML = data.map(d =>
+    `<div class="dnd-target" data-expect="${d.word}">
+      <span class="label">${d.mean}</span>
+      <span class="drop-slot" style="flex:1;min-height:30px;"></span>
+    </div>`
+  ).join('');
+
+  // Restaurar estado
+  const saved = state.answers.ex2 || {};
+  Object.keys(saved).forEach(expect => {
+    const target = targets.querySelector(`[data-expect="${expect}"]`);
+    const bankItem = bank.querySelector(`[data-word="${saved[expect]}"]`);
+    if (target && bankItem) {
+      target.querySelector('.drop-slot').appendChild(bankItem);
+    }
+  });
+
+  setupDragDrop(bank, targets, '#ex2-targets .dnd-target');
+}
+
+function setupDragDrop(bank, targets, targetSel) {
+  let ghost = null, dragged = null, activeTarget = null;
+
+  const onStart = (e, el) => {
+    dragged = el;
+    el.classList.add('dragging');
+    const point = e.touches ? e.touches[0] : e;
+    const rect = el.getBoundingClientRect();
+    ghost = el.cloneNode(true);
+    ghost.classList.add('dnd-ghost');
+    ghost.style.width = rect.width + 'px';
+    ghost.style.height = rect.height + 'px';
+    document.body.appendChild(ghost);
+    moveGhost(point.clientX, point.clientY);
+    if (e.touches) e.preventDefault();
+  };
+  const moveGhost = (x, y) => {
+    if (ghost) { ghost.style.left = x + 'px'; ghost.style.top = y + 'px'; }
+  };
+  const onMove = (e) => {
+    if (!dragged) return;
+    const point = e.touches ? e.touches[0] : e;
+    moveGhost(point.clientX, point.clientY);
+
+    // auto-scroll 70px
+    const EDGE = 70;
+    if (point.clientY < EDGE) window.scrollBy(0, -10);
+    else if (point.clientY > window.innerHeight - EDGE) window.scrollBy(0, 10);
+
+    document.querySelectorAll(targetSel).forEach(t => t.classList.remove('over'));
+    const el = document.elementFromPoint(point.clientX, point.clientY);
+    const t = el && el.closest(targetSel);
+    activeTarget = t;
+    if (t) t.classList.add('over');
+    if (e.touches) e.preventDefault();
+  };
+  const onEnd = (e) => {
+    if (!dragged) return;
+    dragged.classList.remove('dragging');
+    if (ghost) { ghost.remove(); ghost = null; }
+    if (activeTarget) {
+      const slot = activeTarget.querySelector('.drop-slot') || activeTarget;
+      // Si ya hay algo, devolverlo al bank
+      const existing = slot.querySelector('.draggable');
+      if (existing) bank.appendChild(existing);
+      slot.appendChild(dragged);
+    } else {
+      // Si se suelta fuera, devolver al bank si estaba en un target
+      if (dragged.parentElement !== bank && !dragged.parentElement.classList.contains('reorder-list')) {
+        bank.appendChild(dragged);
+      }
+    }
+    document.querySelectorAll(targetSel).forEach(t => t.classList.remove('over'));
+    dragged = null; activeTarget = null;
+
+    // Guardar estado
+    const result = {};
+    document.querySelectorAll(targetSel).forEach(t => {
+      const slot = t.querySelector('.drop-slot') || t;
+      const item = slot.querySelector('.draggable');
+      if (item) result[t.dataset.expect] = item.dataset.word;
+    });
+    state.answers.ex2 = result; saveState();
+  };
+
+  const attach = (el) => {
+    el.addEventListener('mousedown', (e) => onStart(e, el));
+    el.addEventListener('touchstart', (e) => onStart(e, el), { passive: false });
+    el.addEventListener('dragstart', e => e.preventDefault());
+  };
+  bank.querySelectorAll('.draggable').forEach(attach);
+  targets.querySelectorAll('.draggable').forEach(attach);
+
+  document.addEventListener('mousemove', onMove);
+  document.addEventListener('touchmove', onMove, { passive: false });
+  document.addEventListener('mouseup', onEnd);
+  document.addEventListener('touchend', onEnd);
+}
+
+function checkEx2() {
+  const data = DATA.ex2[state.version];
+  let correct = 0;
+  document.querySelectorAll('#ex2-targets .dnd-target').forEach(t => {
+    const slot = t.querySelector('.drop-slot');
+    const item = slot.querySelector('.draggable');
+    t.style.background = '';
+    if (item && item.dataset.word === t.dataset.expect) {
+      t.style.background = '#C8F7C5';
+      correct++;
+    } else {
+      t.style.background = '#FFD6D6';
+    }
+  });
+  state.scores.ex2 = correct / data.length;
+  saveState(); updateScore();
+  if (correct === data.length) rigo && rigo.cheer();
+  else if (correct === 0) rigo && rigo.comfort();
+}
+
+/* ============================================
+   EJ 3 - PAST SIMPLE FILL
+   ============================================ */
+function renderEx3() {
+  const data = DATA.ex3[state.version];
+  const host = document.getElementById('ex3-questions');
+  host.innerHTML = data.map((it, i) => `
+    <div class="q-row" id="ex3-${i}">
+      <p>${i+1}. ${it.q}</p>
+      <input type="text" data-i="${i}" value="${state.answers['ex3-'+i] || ''}" placeholder="Verbo en pasado">
+    </div>
+  `).join('');
+  host.querySelectorAll('input').forEach(inp => {
+    inp.addEventListener('input', e => {
+      state.answers['ex3-'+e.target.dataset.i] = e.target.value;
+      saveState();
+    });
+  });
+}
+function checkEx3() {
+  const data = DATA.ex3[state.version];
+  let correct = 0;
+  data.forEach((it, i) => {
+    const val = (state.answers['ex3-'+i] || '').trim().toLowerCase();
+    const row = document.getElementById('ex3-'+i);
+    row.classList.remove('correct','wrong');
+    const old = row.querySelector('.feedback'); if (old) old.remove();
+    const fb = document.createElement('div');
+    fb.className = 'feedback';
+    if (val === it.a) {
+      row.classList.add('correct'); fb.classList.add('ok'); fb.textContent = '✓ Correcto';
+      correct++;
+    } else {
+      row.classList.add('wrong'); fb.classList.add('bad'); fb.textContent = '✗ Respuesta: ' + it.a;
+    }
+    row.appendChild(fb);
+  });
+  state.scores.ex3 = correct / data.length;
+  saveState(); updateScore();
+  if (correct === data.length) rigo && rigo.cheer();
+  else if (correct === 0) rigo && rigo.comfort();
+}
+
+/* ============================================
+   EJ 4 - REORDER SENTENCE
+   ============================================ */
+function renderEx4() {
+  const data = DATA.ex4[state.version];
+  const host = document.getElementById('ex4-questions');
+  host.innerHTML = data.map((it, i) => {
+    const saved = state.answers['ex4-'+i];
+    const words = saved ? saved.split('|') : [...it.words].sort(() => Math.random() - 0.5);
+    return `
+      <div class="q-row" id="ex4-${i}">
+        <p>${i+1}. Ordena las palabras:</p>
+        <div class="reorder-list" data-i="${i}">
+          ${words.map(w => `<div class="word-chip" draggable="true">${w}</div>`).join('')}
+        </div>
+      </div>
+    `;
+  }).join('');
+  host.querySelectorAll('.reorder-list').forEach(list => setupReorder(list));
+  // Guardar estado inicial
+  saveEx4();
+}
+
+function setupReorder(list) {
+  let ghost = null, dragged = null;
+
+  const save = () => {
+    const i = list.dataset.i;
+    const words = [...list.querySelectorAll('.word-chip')].map(w => w.textContent);
+    state.answers['ex4-'+i] = words.join('|');
+    saveState();
+  };
+
+  const onStart = (e, el) => {
+    dragged = el;
+    el.classList.add('dragging');
+    const point = e.touches ? e.touches[0] : e;
+    const rect = el.getBoundingClientRect();
+    ghost = el.cloneNode(true);
+    ghost.classList.add('dnd-ghost');
+    ghost.style.width = rect.width + 'px';
+    document.body.appendChild(ghost);
+    ghost.style.left = point.clientX + 'px';
+    ghost.style.top = point.clientY + 'px';
+    if (e.touches) e.preventDefault();
+  };
+  const onMove = (e) => {
+    if (!dragged) return;
+    const point = e.touches ? e.touches[0] : e;
+    if (ghost) { ghost.style.left = point.clientX + 'px'; ghost.style.top = point.clientY + 'px'; }
+
+    const EDGE = 70;
+    if (point.clientY < EDGE) window.scrollBy(0, -10);
+    else if (point.clientY > window.innerHeight - EDGE) window.scrollBy(0, 10);
+
+    const el = document.elementFromPoint(point.clientX, point.clientY);
+    const target = el && el.closest('.word-chip');
+    if (target && target !== dragged && target.parentElement === list) {
+      const rect = target.getBoundingClientRect();
+      const after = point.clientX > rect.left + rect.width / 2;
+      if (after) target.after(dragged); else target.before(dragged);
+    }
+    if (e.touches) e.preventDefault();
+  };
+  const onEnd = () => {
+    if (!dragged) return;
+    dragged.classList.remove('dragging');
+    if (ghost) { ghost.remove(); ghost = null; }
+    dragged = null;
+    save();
+  };
+
+  list.querySelectorAll('.word-chip').forEach(chip => {
+    chip.addEventListener('mousedown', e => onStart(e, chip));
+    chip.addEventListener('touchstart', e => onStart(e, chip), { passive: false });
+    chip.addEventListener('dragstart', e => e.preventDefault());
+  });
+  document.addEventListener('mousemove', onMove);
+  document.addEventListener('touchmove', onMove, { passive: false });
+  document.addEventListener('mouseup', onEnd);
+  document.addEventListener('touchend', onEnd);
+}
+
+function saveEx4() {
+  document.querySelectorAll('#ex4-questions .reorder-list').forEach(list => {
+    const i = list.dataset.i;
+    const words = [...list.querySelectorAll('.word-chip')].map(w => w.textContent);
+    state.answers['ex4-'+i] = words.join('|');
+  });
+  saveState();
+}
+
+function checkEx4() {
+  const data = DATA.ex4[state.version];
+  let correct = 0;
+  data.forEach((it, i) => {
+    const row = document.getElementById('ex4-'+i);
+    const list = row.querySelector('.reorder-list');
+    const words = [...list.querySelectorAll('.word-chip')].map(w => w.textContent).join(' ');
+    row.classList.remove('correct','wrong');
+    const old = row.querySelector('.feedback'); if (old) old.remove();
+    const fb = document.createElement('div');
+    fb.className = 'feedback';
+    if (words === it.answer) {
+      row.classList.add('correct'); fb.classList.add('ok'); fb.textContent = '✓ Correcto';
+      correct++;
+    } else {
+      row.classList.add('wrong'); fb.classList.add('bad'); fb.textContent = '✗ Respuesta: ' + it.answer;
+    }
+    row.appendChild(fb);
+  });
+  state.scores.ex4 = correct / data.length;
+  saveState(); updateScore();
+  if (correct === data.length) rigo && rigo.cheer();
+  else if (correct === 0) rigo && rigo.comfort();
+}
+
+/* ============================================
+   EJ 5 - IMAGE + QUESTION
+   ============================================ */
+function renderEx5() {
+  const data = DATA.ex5[state.version];
+  const host = document.getElementById('ex5-questions');
+  host.innerHTML = data.map((it, i) => `
+    <div class="q-row" id="ex5-${i}" style="text-align:center;">
+      <img src="files/${it.img}" alt="${it.desc}" class="img-large" onerror="this.style.display='none'">
+      <p>${i+1}. Escoge la pregunta correcta:</p>
+      <div class="options" data-i="${i}" style="justify-content:center;">
+        ${it.options.map((o, j) => `<button class="opt" data-j="${j}">${o}</button>`).join('')}
+      </div>
+    </div>
+  `).join('');
+  // Restaurar
+  document.querySelectorAll('#ex5-questions .options').forEach(opt => {
+    const i = opt.dataset.i;
+    const saved = state.answers['ex5-'+i];
+    opt.querySelectorAll('.opt').forEach(btn => {
+      if (saved !== undefined && +btn.dataset.j === saved) btn.classList.add('selected');
+      btn.addEventListener('click', () => {
+        opt.querySelectorAll('.opt').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        state.answers['ex5-'+i] = +btn.dataset.j;
+        saveState();
+      });
+    });
+  });
+}
+function checkEx5() {
+  const data = DATA.ex5[state.version];
+  let correct = 0;
+  data.forEach((it, i) => {
+    const row = document.getElementById('ex5-'+i);
+    const sel = state.answers['ex5-'+i];
+    row.classList.remove('correct','wrong');
+    const old = row.querySelector('.feedback'); if (old) old.remove();
+    const fb = document.createElement('div');
+    fb.className = 'feedback';
+    if (sel === it.correct) {
+      row.classList.add('correct'); fb.classList.add('ok'); fb.textContent = '✓ Correcto';
+      correct++;
+    } else {
+      row.classList.add('wrong'); fb.classList.add('bad');
+      fb.textContent = '✗ Respuesta: ' + it.options[it.correct];
+    }
+    row.appendChild(fb);
+  });
+  state.scores.ex5 = correct / data.length;
+  saveState(); updateScore();
+  if (correct === data.length) rigo && rigo.cheer();
+  else if (correct === 0) rigo && rigo.comfort();
+}
+
+/* ============================================
+   EJ 6 - WORD SEARCH (con palabras que comparten letras)
+   ============================================ */
+const WS_SIZE = 12;
+let wsGrid = [], wsPlacements = [], wsFound = new Set();
+
+function renderEx6() {
+  const words = DATA.ex6[state.version];
+  buildWS(words);
+  const gridEl = document.getElementById('ex6-grid');
+  gridEl.style.gridTemplateColumns = `repeat(${WS_SIZE}, 1fr)`;
+  gridEl.innerHTML = '';
+  for (let r = 0; r < WS_SIZE; r++) {
+    for (let c = 0; c < WS_SIZE; c++) {
+      const cell = document.createElement('div');
+      cell.className = 'ws-cell';
+      cell.dataset.r = r; cell.dataset.c = c;
+      cell.textContent = wsGrid[r][c];
+      gridEl.appendChild(cell);
+    }
+  }
+  const wl = document.getElementById('ex6-wordlist');
+  wl.innerHTML = words.map(w => `<span class="ws-word" data-w="${w}">${w}</span>`).join('');
+  document.getElementById('ws-total').textContent = words.length;
+
+  // restaurar encontradas
+  wsFound = new Set(state.answers.ex6_found || []);
+  wsFound.forEach(w => {
+    const span = wl.querySelector(`[data-w="${w}"]`);
+    if (span) span.classList.add('done');
+    // Pintar celdas
+    const pl = wsPlacements.find(p => p.word === w);
+    if (pl) pl.cells.forEach(([r,c]) => {
+      const cell = gridEl.querySelector(`[data-r="${r}"][data-c="${c}"]`);
+      if (cell) cell.classList.add('found');
+    });
+  });
+  document.getElementById('ws-count').textContent = wsFound.size;
+
+  setupWSSelection(gridEl);
+  updateWSScore();
+}
+
+function buildWS(words) {
+  wsGrid = Array(WS_SIZE).fill().map(() => Array(WS_SIZE).fill(''));
+  wsPlacements = [];
+  const dirs = [[0,1],[1,0],[1,1],[-1,1]]; // H, V, diag↘, diag↗
+
+  words.forEach(word => {
+    let placed = false;
+    for (let attempt = 0; attempt < 200 && !placed; attempt++) {
+      const [dr, dc] = dirs[Math.floor(Math.random() * dirs.length)];
+      const len = word.length;
+      const rMin = dr === -1 ? len - 1 : 0;
+      const rMax = dr === 1 ? WS_SIZE - len : WS_SIZE - 1;
+      const cMin = 0;
+      const cMax = dc === 1 ? WS_SIZE - len : WS_SIZE - 1;
+      const r0 = rMin + Math.floor(Math.random() * (rMax - rMin + 1));
+      const c0 = cMin + Math.floor(Math.random() * (cMax - cMin + 1));
+
+      // verificar que las celdas estén vacías o tengan la misma letra (palabras comparten letras)
+      let ok = true;
+      for (let i = 0; i < len; i++) {
+        const r = r0 + dr * i, c = c0 + dc * i;
+        if (r < 0 || r >= WS_SIZE || c < 0 || c >= WS_SIZE) { ok = false; break; }
+        if (wsGrid[r][c] && wsGrid[r][c] !== word[i]) { ok = false; break; }
+      }
+      if (!ok) continue;
+
+      const cells = [];
+      for (let i = 0; i < len; i++) {
+        const r = r0 + dr * i, c = c0 + dc * i;
+        wsGrid[r][c] = word[i];
+        cells.push([r, c]);
+      }
+      wsPlacements.push({ word, cells, start: [r0, c0], end: [r0 + dr*(len-1), c0 + dc*(len-1)], dir: [dr,dc] });
+      placed = true;
+    }
+  });
+
+  // Rellenar vacíos
+  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  for (let r = 0; r < WS_SIZE; r++) {
+    for (let c = 0; c < WS_SIZE; c++) {
+      if (!wsGrid[r][c]) wsGrid[r][c] = letters[Math.floor(Math.random() * 26)];
+    }
+  }
+}
+
+function setupWSSelection(gridEl) {
+  let selecting = false, start = null, current = null;
+
+  const clearSelecting = () => {
+    gridEl.querySelectorAll('.ws-cell.selecting').forEach(c => c.classList.remove('selecting'));
+  };
+
+  const getCellFromPoint = (x, y) => {
+    const el = document.elementFromPoint(x, y);
+    return el && el.classList && el.classList.contains('ws-cell') ? el : null;
+  };
+
+  const cellsBetween = (a, b) => {
+    const r1 = +a.dataset.r, c1 = +a.dataset.c;
+    const r2 = +b.dataset.r, c2 = +b.dataset.c;
+    const dr = r2 - r1, dc = c2 - c1;
+    // Solo líneas válidas: H, V, diagonales
+    if (dr !== 0 && dc !== 0 && Math.abs(dr) !== Math.abs(dc)) return null;
+    const len = Math.max(Math.abs(dr), Math.abs(dc)) + 1;
+    const sr = Math.sign(dr), sc = Math.sign(dc);
+    const res = [];
+    for (let i = 0; i < len; i++) res.push([r1 + sr*i, c1 + sc*i]);
+    return res;
+  };
+
+  const highlight = (cells) => {
+    clearSelecting();
+    if (!cells) return;
+    cells.forEach(([r,c]) => {
+      const cell = gridEl.querySelector(`[data-r="${r}"][data-c="${c}"]`);
+      if (cell) cell.classList.add('selecting');
+    });
+  };
+
+  const readWord = (cells) => cells.map(([r,c]) => wsGrid[r][c]).join('');
+
+  const onDown = (e) => {
+    const point = e.touches ? e.touches[0] : e;
+    const cell = getCellFromPoint(point.clientX, point.clientY);
+    if (!cell) return;
+    selecting = true; start = cell; current = cell;
+    cell.classList.add('selecting');
+    e.preventDefault();
+  };
+  const onMove = (e) => {
+    if (!selecting) return;
+    const point = e.touches ? e.touches[0] : e;
+    const cell = getCellFromPoint(point.clientX, point.clientY);
+    if (!cell || cell === current) return;
+    current = cell;
+    const cells = cellsBetween(start, current);
+    if (cells) highlight(cells);
+    e.preventDefault();
+  };
+  const onUp = () => {
+    if (!selecting) return;
+    selecting = false;
+    const cells = cellsBetween(start, current);
+    clearSelecting();
+    if (!cells) return;
+    const wordFwd = readWord(cells);
+    const wordBwd = readWord([...cells].reverse());
+
+    const words = DATA.ex6[state.version];
+    const matched = words.find(w => (w === wordFwd || w === wordBwd) && !wsFound.has(w));
+    if (matched) {
+      wsFound.add(matched);
+      state.answers.ex6_found = [...wsFound];
+      saveState();
+      cells.forEach(([r,c]) => {
+        const cell = gridEl.querySelector(`[data-r="${r}"][data-c="${c}"]`);
+        if (cell) cell.classList.add('found');
+      });
+      document.querySelector(`#ex6-wordlist [data-w="${matched}"]`).classList.add('done');
+      document.getElementById('ws-count').textContent = wsFound.size;
+      updateWSScore();
+      rigo && rigo.cheer();
+    }
+  };
+
+  gridEl.addEventListener('mousedown', onDown);
+  gridEl.addEventListener('touchstart', onDown, { passive: false });
+  document.addEventListener('mousemove', onMove);
+  document.addEventListener('touchmove', onMove, { passive: false });
+  document.addEventListener('mouseup', onUp);
+  document.addEventListener('touchend', onUp);
+}
+
+function updateWSScore() {
+  const total = DATA.ex6[state.version].length;
+  state.scores.ex6 = wsFound.size / total;
+  saveState(); updateScore();
+}
+
+/* ============================================
+   EJ 7 - MATCH EMOJI
+   ============================================ */
+let matchSel = { emoji: null, word: null };
+let matchedPairs = new Set();
+
+function renderEx7() {
+  const data = DATA.ex7[state.version];
+  const grid = document.getElementById('ex7-grid');
+  const emojis = [...data].sort(() => Math.random() - 0.5);
+  const words = [...data].sort(() => Math.random() - 0.5);
+
+  matchedPairs = new Set(state.answers.ex7_matched || []);
+
+  grid.innerHTML =
+    emojis.map(d => `
+      <div class="match-card ${matchedPairs.has(d.word) ? 'matched' : ''}" data-type="emoji" data-w="${d.word}">
+        <span class="emoji">${d.emoji}</span>
+        <span class="txt">${d.answer}</span>
+      </div>
+    `).join('') +
+    words.map(d => `
+      <div class="match-card ${matchedPairs.has(d.word) ? 'matched' : ''}" data-type="word" data-w="${d.word}">
+        <span class="emoji" style="font-size:24px;color:#FF6B9D;">${d.word}</span>
+        <span class="txt" style="font-size:11px;color:#666;">WH-word</span>
+      </div>
+    `).join('');
+
+  grid.querySelectorAll('.match-card:not(.matched)').forEach(card => {
+    card.addEventListener('click', () => {
+      const type = card.dataset.type;
+      const w = card.dataset.w;
+      grid.querySelectorAll('.match-card.selected').forEach(c => {
+        if (c.dataset.type === type) c.classList.remove('selected');
+      });
+      card.classList.add('selected');
+      matchSel[type] = w;
+
+      if (matchSel.emoji && matchSel.word) {
+        if (matchSel.emoji === matchSel.word) {
+          matchedPairs.add(matchSel.word);
+          state.answers.ex7_matched = [...matchedPairs];
+          saveState();
+          grid.querySelectorAll(`.match-card[data-w="${matchSel.word}"]`).forEach(c => {
+            c.classList.add('matched'); c.classList.remove('selected');
+          });
+          rigo && rigo.cheer();
+        } else {
+          setTimeout(() => {
+            grid.querySelectorAll('.match-card.selected').forEach(c => c.classList.remove('selected'));
+            rigo && rigo.comfort();
+          }, 600);
+        }
+        matchSel = { emoji: null, word: null };
+        document.getElementById('match-count').textContent = matchedPairs.size;
+        state.scores.ex7 = matchedPairs.size / 5;
+        saveState(); updateScore();
+      }
+    });
+  });
+  document.getElementById('match-count').textContent = matchedPairs.size;
+  state.scores.ex7 = matchedPairs.size / 5;
+}
+
+/* ============================================
+   EJ 8 - IMAGE + ANSWER
+   ============================================ */
+function renderEx8() {
+  const data = DATA.ex8[state.version];
+  const host = document.getElementById('ex8-questions');
+  host.innerHTML = data.map((it, i) => `
+    <div class="q-row" id="ex8-${i}" style="text-align:center;">
+      <img src="files/${it.img}" alt="image" class="img-large" onerror="this.style.display='none'">
+      <p>${i+1}. ${it.q}</p>
+      <div class="options" data-i="${i}" style="justify-content:center;">
+        ${it.options.map((o, j) => `<button class="opt" data-j="${j}">${o}</button>`).join('')}
+      </div>
+    </div>
+  `).join('');
+  document.querySelectorAll('#ex8-questions .options').forEach(opt => {
+    const i = opt.dataset.i;
+    const saved = state.answers['ex8-'+i];
+    opt.querySelectorAll('.opt').forEach(btn => {
+      if (saved !== undefined && +btn.dataset.j === saved) btn.classList.add('selected');
+      btn.addEventListener('click', () => {
+        opt.querySelectorAll('.opt').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        state.answers['ex8-'+i] = +btn.dataset.j;
+        saveState();
+      });
+    });
+  });
+}
+function checkEx8() {
+  const data = DATA.ex8[state.version];
+  let correct = 0;
+  data.forEach((it, i) => {
+    const row = document.getElementById('ex8-'+i);
+    const sel = state.answers['ex8-'+i];
+    row.classList.remove('correct','wrong');
+    const old = row.querySelector('.feedback'); if (old) old.remove();
+    const fb = document.createElement('div');
+    fb.className = 'feedback';
+    if (sel === it.correct) {
+      row.classList.add('correct'); fb.classList.add('ok'); fb.textContent = '✓ Correcto';
+      correct++;
+    } else {
+      row.classList.add('wrong'); fb.classList.add('bad');
+      fb.textContent = '✗ Respuesta: ' + it.options[it.correct];
+    }
+    row.appendChild(fb);
+  });
+  state.scores.ex8 = correct / data.length;
+  saveState(); updateScore();
+  if (correct === data.length) rigo && rigo.cheer();
+  else if (correct === 0) rigo && rigo.comfort();
+}
+
+/* ============================================
+   SCORE
+   ============================================ */
+function updateScore() {
+  const weights = { ex1:1, ex2:1, ex3:1, ex4:1, ex5:1.5, ex6:1.5, ex7:1.5, ex8:1.5 };
+  let total = 0;
+  for (const k in weights) {
+    total += (state.scores[k] || 0) * weights[k];
+  }
+  const display = Math.min(10, total).toFixed(1);
+  document.getElementById('score-display').textContent = display + ' / 10';
+}
+
+/* ============================================
+   JUEGO: AHORCADO
+   ============================================ */
+const HANGMAN_WORDS = [
+  { word: 'WENT', hint: 'Past of GO' },
+  { word: 'ATE', hint: 'Past of EAT' },
+  { word: 'PLAYED', hint: 'Past of PLAY' },
+  { word: 'STUDIED', hint: 'Past of STUDY' },
+  { word: 'RAN', hint: 'Past of RUN' },
+  { word: 'WROTE', hint: 'Past of WRITE' },
+  { word: 'READ', hint: 'Past of READ' },
+  { word: 'WATCHED', hint: 'Past of WATCH' },
+  { word: 'SAW', hint: 'Past of SEE' },
+  { word: 'BOUGHT', hint: 'Past of BUY' }
+];
+const BODY_PARTS = ['hm-head','hm-body','hm-arm1','hm-arm2','hm-leg1','hm-leg2'];
+
+let hm = { word: '', hint: '', guessed: new Set(), wrong: 0, finished: false };
+
+function initHangman() {
+  // Si ya ganó o perdió, mantener puntos
+  const pick = HANGMAN_WORDS[Math.floor(Math.random() * HANGMAN_WORDS.length)];
+  hm = { word: pick.word, hint: pick.hint, guessed: new Set(), wrong: 0, finished: false };
+
+  document.getElementById('hangman-hint').textContent = 'Hint: ' + pick.hint;
+  BODY_PARTS.forEach(id => document.getElementById(id).style.display = 'none');
+  document.getElementById('hangman-body').style.display = 'block';
+  document.getElementById('game-status').textContent = '';
+  document.getElementById('btn-restart-game').style.display = 'none';
+
+  renderHangmanWord();
+  renderLetters();
+  rigo && rigo.inviteGame();
+}
+
+function renderHangmanWord() {
+  const el = document.getElementById('hangman-word');
+  el.textContent = hm.word.split('').map(l => hm.guessed.has(l) ? l : '_').join(' ');
+}
+
+function renderLetters() {
+  const grid = document.getElementById('letters-grid');
+  grid.innerHTML = '';
+  'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').forEach(l => {
+    const btn = document.createElement('button');
+    btn.className = 'letter-btn';
+    btn.textContent = l;
+    btn.disabled = hm.finished || hm.guessed.has(l);
+    btn.onclick = () => guessLetter(l);
+    grid.appendChild(btn);
+  });
+}
+
+function guessLetter(l) {
+  if (hm.guessed.has(l) || hm.finished) return;
+  hm.guessed.add(l);
+  const btn = [...document.querySelectorAll('.letter-btn')].find(b => b.textContent === l);
+  if (hm.word.includes(l)) {
+    btn.classList.add('correct');
+  } else {
+    btn.classList.add('wrong');
+    hm.wrong++;
+    if (hm.wrong <= BODY_PARTS.length) {
+      document.getElementById(BODY_PARTS[hm.wrong - 1]).style.display = 'block';
+    }
+  }
+  renderHangmanWord();
+  btn.disabled = true;
+
+  // ganó
+  const won = hm.word.split('').every(ch => hm.guessed.has(ch));
+  if (won) endGame('win');
+  else if (hm.wrong >= 6) endGame('lose');
+}
+
+function endGame(result) {
+  hm.finished = true;
+  renderHangmanWord();
+  document.querySelectorAll('.letter-btn').forEach(b => b.disabled = true);
+  const status = document.getElementById('game-status');
+
+  // Solo se suman puntos EXTRA la primera vez
+  if (!state.gameFinished) {
+    if (result === 'win') {
+      state.extraPoints = 1;
+      status.innerHTML = '🏆 Felicidades, eres bueno en este juego, ten 1 punto extra';
+      status.style.color = '#7ED957';
+      rigo && rigo.cheer();
+    } else {
+      state.extraPoints = 0;
+      status.innerHTML = 'Oops, más suerte para la próxima. La palabra era: ' + hm.word;
+      status.style.color = '#E63946';
+      rigo && rigo.comfort();
+    }
+    state.gameFinished = true;
+    saveState();
+  } else {
+    status.innerHTML = result === 'win'
+      ? '🏆 ¡Ganaste! (puntos extra ya registrados: ' + state.extraPoints + ')'
+      : 'La palabra era: ' + hm.word + ' (puntos extra registrados: ' + state.extraPoints + ')';
+  }
+  document.getElementById('btn-restart-game').style.display = 'inline-block';
+}
+
+/* ============================================
+   SANITIZADOR PARA PDF
+   ============================================ */
+function sanitizePDF(txt) {
+  if (txt == null) return '';
+  let s = String(txt);
+  // Strip HTML
+  s = s.replace(/<[^>]*>/g, '');
+  // Reemplazar caracteres raros
+  s = s.replace(/[\u2018\u2019]/g, "'")
+       .replace(/[\u201C\u201D]/g, '"')
+       .replace(/[\u2013\u2014]/g, '-')
+       .replace(/\u2192/g, '->')
+       .replace(/\u2190/g, '<-')
+       .replace(/\u2022/g, '*')
+       .replace(/\u00A0/g, ' ')
+       .replace(/\u2026/g, '...');
+  // Quitar emojis y cualquier char fuera de Latin-1 (0x00-0xFF)
+  s = s.split('').filter(c => c.charCodeAt(0) <= 0xFF).join('');
+  // Quitar check marks y otros
+  s = s.replace(/[\u2713\u2717\u2714\u2718]/g, '');
+  return s.trim();
+}
+
+/* ============================================
+   PDF GENERATION
+   ============================================ */
+document.getElementById('btn-pdf').addEventListener('click', generatePDF);
+
+function generatePDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'mm', format: 'letter' });
+  const W = doc.internal.pageSize.getWidth();
+  let y = 15;
+
+  // Encabezado
+  doc.setFillColor(255, 107, 157);
+  doc.rect(0, 0, W, 8, 'F');
+  y = 14;
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(14);
+  doc.setTextColor(26, 26, 26);
+  doc.text(sanitizePDF('WH QUESTIONS + SIMPLE PAST - A1+'), 10, y); y += 6;
+
+  // Puntos extra esquina sup der
+  doc.setFontSize(10);
+  doc.setFillColor(255, 230, 109);
+  doc.rect(W - 50, 10, 40, 12, 'F');
+  doc.setDrawColor(26,26,26);
+  doc.rect(W - 50, 10, 40, 12);
+  doc.text(sanitizePDF('Puntos extra: ' + state.extraPoints), W - 48, 18);
+
+  doc.setFontSize(9);
+  doc.setFont('helvetica', 'normal');
+  const lines = [
+    'Profesor: Jose Eliseo Martinez   |   Escuela: COEDUCA   |   Seccion: A',
+    'Nivel: A1+   |   Grado: ' + state.student.grade,
+    'Nombre: ' + state.student.name + '   |   NIE: ' + state.student.nie,
+    state.partner ? ('Companero: ' + state.partner.name + '   |   NIE: ' + state.partner.nie) : '',
+    'Tema: WH questions (What, Who, When, Where, How) + Simple Past'
+  ].filter(Boolean);
+  lines.forEach(l => { doc.text(sanitizePDF(l), 10, y); y += 5; });
+
+  // Nota final
+  const scoreText = document.getElementById('score-display').textContent;
+  const base = parseFloat(scoreText);
+  const finalScore = Math.min(10, base + state.extraPoints).toFixed(1);
+  y += 2;
+  doc.setFont('helvetica', 'bold');
+  doc.setFillColor(126, 217, 87);
+  doc.rect(10, y - 4, W - 20, 8, 'F');
+  doc.setTextColor(26,26,26);
+  doc.text(sanitizePDF('Puntaje base: ' + scoreText + '   +   Extra: ' + state.extraPoints + '   =   NOTA FINAL: ' + finalScore + ' / 10'), 12, y + 1);
+  y += 12;
+
+  // Helper
+  const addLine = (text, bold = false, size = 10) => {
+    if (y > 265) { doc.addPage(); y = 15; }
+    doc.setFont('helvetica', bold ? 'bold' : 'normal');
+    doc.setFontSize(size);
+    doc.setTextColor(26,26,26);
+    const split = doc.splitTextToSize(sanitizePDF(text), W - 20);
+    split.forEach(s => {
+      if (y > 265) { doc.addPage(); y = 15; }
+      doc.text(s, 10, y); y += size * 0.45 + 1;
+    });
+  };
+  const addSection = (title) => {
+    y += 3;
+    if (y > 260) { doc.addPage(); y = 15; }
+    doc.setFillColor(99, 197, 218);
+    doc.rect(10, y - 4, W - 20, 7, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11);
+    doc.setTextColor(26,26,26);
+    doc.text(sanitizePDF(title), 12, y + 1);
+    y += 9;
+  };
+
+  // EJ1
+  addSection('Ejercicio 1: Listen & Complete');
+  DATA.ex1[state.version].forEach((it, i) => {
+    const ans = state.answers['ex1-'+i] || '(vacio)';
+    const ok = ans.trim().toLowerCase() === it.a;
+    addLine((i+1)+'. '+it.q);
+    addLine('   Respuesta: ' + ans + '  |  Correcta: ' + it.a.toUpperCase() + '  ' + (ok ? '[OK]' : '[X]'));
+  });
+
+  // EJ2
+  addSection('Ejercicio 2: Match WH-Word with Meaning');
+  DATA.ex2[state.version].forEach(d => {
+    const given = (state.answers.ex2 && state.answers.ex2[d.word]) || '(vacio)';
+    const ok = given === d.word;
+    addLine(d.mean + ' -> ' + given + '  |  Correcta: ' + d.word + '  ' + (ok ? '[OK]' : '[X]'));
+  });
+
+  // EJ3
+  addSection('Ejercicio 3: Simple Past Form');
+  DATA.ex3[state.version].forEach((it, i) => {
+    const ans = state.answers['ex3-'+i] || '(vacio)';
+    const ok = ans.trim().toLowerCase() === it.a;
+    addLine((i+1)+'. '+it.q);
+    addLine('   Respuesta: ' + ans + '  |  Correcta: ' + it.a + '  ' + (ok ? '[OK]' : '[X]'));
+  });
+
+  // EJ4
+  addSection('Ejercicio 4: Reorder the Question');
+  DATA.ex4[state.version].forEach((it, i) => {
+    const words = (state.answers['ex4-'+i] || '').split('|').join(' ');
+    const ok = words === it.answer;
+    addLine((i+1)+'. Respuesta: ' + (words || '(vacio)'));
+    addLine('   Correcta: ' + it.answer + '  ' + (ok ? '[OK]' : '[X]'));
+  });
+
+  // EJ5
+  addSection('Ejercicio 5: Match Image with WH-Question');
+  DATA.ex5[state.version].forEach((it, i) => {
+    const sel = state.answers['ex5-'+i];
+    const ans = sel !== undefined ? it.options[sel] : '(vacio)';
+    const ok = sel === it.correct;
+    addLine((i+1)+'. Imagen: ' + it.desc);
+    addLine('   Respuesta: ' + ans);
+    addLine('   Correcta: ' + it.options[it.correct] + '  ' + (ok ? '[OK]' : '[X]'));
+  });
+
+  // EJ6
+  addSection('Ejercicio 6: Word Search');
+  const wsTotal = DATA.ex6[state.version].length;
+  addLine('Palabras encontradas: ' + wsFound.size + ' / ' + wsTotal);
+  addLine('Lista: ' + DATA.ex6[state.version].join(', '));
+  addLine('Encontradas: ' + [...wsFound].join(', '));
+
+  // EJ7
+  addSection('Ejercicio 7: Match Emoji with WH-Answer');
+  addLine('Parejas correctas: ' + matchedPairs.size + ' / 5');
+
+  // EJ8
+  addSection('Ejercicio 8: Answer the Questions');
+  DATA.ex8[state.version].forEach((it, i) => {
+    const sel = state.answers['ex8-'+i];
+    const ans = sel !== undefined ? it.options[sel] : '(vacio)';
+    const ok = sel === it.correct;
+    addLine((i+1)+'. '+it.q);
+    addLine('   Respuesta: ' + ans);
+    addLine('   Correcta: ' + it.options[it.correct] + '  ' + (ok ? '[OK]' : '[X]'));
+  });
+
+  // Juego
+  addSection('Juego: Hangman');
+  addLine('Resultado: ' + (state.gameFinished ? (state.extraPoints > 0 ? 'GANO (+1)' : 'PERDIO (0)') : 'No jugado'));
+
+  // Fix iOS: usar blob + link con download
+  const blob = doc.output('blob');
+  const url = URL.createObjectURL(blob);
+  const fileName = 'WH_Questions_' + state.student.name.replace(/\s+/g, '_') + '.pdf';
+  const a = document.createElement('a');
+  a.href = url; a.download = fileName;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => {
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }, 500);
+}
+
+/* ============================================
+   RIGO: hint on tap (evento)
+   ============================================ */
+window.addEventListener('rigo-hint-requested', () => {
+  // No acción especial, Rigo ya muestra su propio hint
+});
+
+/* ============================================
+   BIENVENIDA INICIAL
+   ============================================ */
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    if (window.rigo) rigo.welcome();
+  }, 600);
+});
+</script>
+
+</body>
+</html>
