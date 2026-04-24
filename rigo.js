@@ -45,7 +45,15 @@
     "Una pista: lee despacio",
     "Confía en tu primera idea",
     "¿Ya intentaste? ¡Tú puedes!",
-    "Shhh no le digas al teacher Eliseo"
+    "Shhh no le digas al teacher Eliseo",
+    "Que Dios te ayude porque yo no"
+    "La respuesta está en tu corazón",
+    "Deja de tocarme o llamo a mi abogado",
+    "Ya ni le muevas, no se inglés",
+    "Esto es culpa de Darwin",
+    "¿Todavía no has terminado?",
+    "Diocuarde, yo ya hubiera terminado",
+    "¿Ya viste el nuevo capítulo de la Rosa de Guadalupe?"
   ];
 
   const CHEER_MESSAGES = [
