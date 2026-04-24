@@ -50,7 +50,7 @@
     { text: "Una pista: lee despacio", grade: null },
     { text: "Confía en tu primera idea", grade: null },
     { text: "¿Ya intentaste? ¡Tú puedes!", grade: null },
-    { text: "Shhh no le digas al teacher Eliseo. pero la respuesta del ejercicio", grade: null },
+    { text: "Shhh no le digas al teacher Eliseo. pero la primera respuesta del audio es (What)", grade: null },
     { text: "Que Dios te ayude porque yo no", grade: null },
     { text: "La respuesta está en tu corazón", grade: null },
     { text: "Deja de tocarme o llamo a mi abogado", grade: null },
@@ -72,7 +72,7 @@
   ];
 
   const CHEER_MESSAGES = [
-    "¡Excelente!", "¡Así se hace!", "¡Genial!", "¡Perfecto!",
+    "¡Excelente!", "¡Ajuuuua!", "¡Genial!", "¡Perfecto!",
     "¡Increíble!", "¡Eres una máquina!", "¡Sí señor!"
   ];
 
