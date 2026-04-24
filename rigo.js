@@ -1,12 +1,15 @@
 /**
- * RIGO THE CHAMELEON - Mascota oficial del ecosistema de inglés
- * Estilo: Kawaii (tierno, redondito, ojos enormes, mejillas rosadas)
+ * RIGO THE CHAMELEON v2 - Mascota oficial del ecosistema de inglés
+ * Estilo: Kawaii realista (silueta de camaleón con cresta, cola enrollada, 4 patas)
+ *
  * Uso:  <script src="rigo.js"></script>
- *       <rigo-mascot></rigo-mascot>
+ *       <rigo-mascot grade="Noveno"></rigo-mascot>
+ *       (el atributo grade filtra los hints personalizados)
  *
  * API pública:
  *   rigo.welcome()        -> saludo inicial antes del NIE
  *   rigo.loginSuccess(n)  -> celebración al ingresar
+ *   rigo.setGrade(grade)  -> filtra hints al grado actual
  *   rigo.inviteGame()     -> invita al juego final
  *   rigo.cheer()          -> festeja una respuesta correcta
  *   rigo.comfort()        -> consuela tras un error
@@ -25,46 +28,58 @@
   ];
 
   const RANDOM_MESSAGES = [
-    "You can do it!",
-    "¡Tú puedes!",
-    "English is fun!",
-    "Keep going, friend!",
-    "¡No te rindas!",
-    "I believe in you!",
-    "Practice makes perfect",
-    "¡Sigue así!",
-    "Learning is cool",
-    "You're doing great!",
-    "Respira y continúa",
-    "One step at a time"
+    { text: "You can do it!", grade: null },
+    { text: "¡Tú puedes!", grade: null },
+    { text: "English is fun!", grade: null },
+    { text: "Keep going, friend!", grade: null },
+    { text: "¡No te rindas!", grade: null },
+    { text: "I believe in you!", grade: null },
+    { text: "Practice makes perfect", grade: null },
+    { text: "Learning is cool", grade: null },
+    { text: "You're doing great!", grade: null },
+    { text: "Respira y continúa", grade: null },
+    { text: "One step at a time", grade: null }
   ];
 
+  // HINTS: si grade es null aparecen para todos los grados.
+  //        si grade es un array, solo aparecen para esos grados.
+  // Grados válidos: "Séptimo", "Octavo", "Noveno", "Primer Año", "Segundo Año", "Prueba"
   const HINT_MESSAGES = [
-    "Psst... piensa en el pasado",
-    "Tranqui, revisa la pregunta otra vez",
-    "Una pista: lee despacio",
-    "Confía en tu primera idea",
-    "¿Ya intentaste? ¡Tú puedes!",
-    "Shhh no le digas al teacher Eliseo",
-    "Que Dios te ayude porque yo no"
-    "La respuesta está en tu corazón",
-    "Deja de tocarme o llamo a mi abogado",
-    "Ya ni le muevas, no se inglés",
-    "Esto es culpa de Darwin",
-    "¿Todavía no has terminado?",
-    "Diocuarde, yo ya hubiera terminado",
-    "¿Ya viste el nuevo capítulo de la Rosa de Guadalupe?"
+    { text: "Psst... piensa en el pasado", grade: null },
+    { text: "Tranqui, revisa la pregunta otra vez", grade: null },
+    { text: "Una pista: lee despacio", grade: null },
+    { text: "Confía en tu primera idea", grade: null },
+    { text: "¿Ya intentaste? ¡Tú puedes!", grade: null },
+    { text: "Shhh no le digas al teacher Eliseo", grade: null },
+    { text: "Que Dios te ayude porque yo no", grade: null },
+    { text: "La respuesta está en tu corazón", grade: null },
+    { text: "Deja de tocarme o llamo a mi abogado", grade: null },
+    { text: "Ya ni le muevas, no sé inglés", grade: null },
+    { text: "Esto es culpa de Darwin", grade: ["Noveno"] },
+    { text: "¿Todavía no has terminado?", grade: null },
+    { text: "Diosguarde, yo ya hubiera terminado", grade: null },
+    { text: "¿Ya viste el nuevo capítulo de la Rosa de Guadalupe?", grade: null },
+    { text: "Google Translate está llorando", grade: null },
+    { text: "Si fallas, te convierto en sopa de letras", grade: null },
+    { text: "Respira, no es cálculo", grade: null },
+    { text: "El inglés es como el mole: con paciencia", grade: null },
+    { text: "Yo solo soy un camaleón, no un traductor", grade: null },
+    { text: "Mejor pregúntale al Wilmer", grade: ["Segundo Año"] },
+    { text: "Esta pregunta la sabe hasta mi abuela", grade: null },
+    { text: "¿Y si mejor estudias? (broma, sigue)", grade: null }
   ];
 
   const CHEER_MESSAGES = [
-    "¡Excelente!", "¡Así se hace!", "¡Genial!", "¡Perfecto!", "¡Increíble!"
+    "¡Excelente!", "¡Así se hace!", "¡Genial!", "¡Perfecto!",
+    "¡Increíble!", "¡Eres una máquina!", "¡Sí señor!"
   ];
 
   const COMFORT_MESSAGES = [
     "Casi casi, inténtalo otra vez",
     "No pasa nada, seguimos",
     "Todos aprendemos de los errores",
-    "Respira e intenta de nuevo"
+    "Respira e intenta de nuevo",
+    "Nadie nace sabiendo"
   ];
 
   class RigoMascot extends HTMLElement {
@@ -75,15 +90,22 @@
       this.bubbleTimer = null;
       this.randomTimer = null;
       this.blinkTimer = null;
+      this.grade = null;
 
-      // Arrastre
       this.isDragging = false;
       this.dragOffsetX = 0;
       this.dragOffsetY = 0;
       this.hasMoved = false;
     }
 
+    static get observedAttributes() { return ['grade']; }
+
+    attributeChangedCallback(name, _oldVal, newVal) {
+      if (name === 'grade') this.grade = newVal || null;
+    }
+
     connectedCallback() {
+      this.grade = this.getAttribute('grade') || null;
       this.render();
       this.restorePosition();
       this.setupInteractions();
@@ -92,183 +114,302 @@
     }
 
     disconnectedCallback() {
-      clearInterval(this.randomTimer);
+      clearTimeout(this.randomTimer);
       clearInterval(this.blinkTimer);
       clearTimeout(this.bubbleTimer);
     }
 
-    // ======================= SVG KAWAII =======================
+    // Filtra mensajes según grado: null = todos; array = solo esos grados.
+    pickMessage(pool) {
+      const candidates = pool.filter(m =>
+        m.grade === null || (Array.isArray(m.grade) && this.grade && m.grade.includes(this.grade))
+      );
+      if (!candidates.length) return pool[0].text;
+      return candidates[Math.floor(Math.random() * candidates.length)].text;
+    }
+
+    // ======================= SVG CAMALEÓN =======================
     getSVG(emotion) {
       if (emotion === 'easterEgg') {
-        // Easter egg: Rigo estilo Warhol (4 cuadros de colores)
         return `
-          <svg viewBox="0 0 140 140" width="100%" height="100%">
-            <g stroke="#000" stroke-width="3">
-              <rect x="5" y="5" width="65" height="65" fill="#FF6B9D"/>
-              <rect x="70" y="5" width="65" height="65" fill="#FFE66D"/>
-              <rect x="5" y="70" width="65" height="65" fill="#4ECDC4"/>
-              <rect x="70" y="70" width="65" height="65" fill="#A8E6CF"/>
+          <svg viewBox="0 0 200 200" width="100%" height="100%">
+            <g stroke="#1a1a1a" stroke-width="3">
+              <rect x="5" y="5" width="92" height="92" fill="#FF6B9D"/>
+              <rect x="103" y="5" width="92" height="92" fill="#FFE66D"/>
+              <rect x="5" y="103" width="92" height="92" fill="#4ECDC4"/>
+              <rect x="103" y="103" width="92" height="92" fill="#A8E6CF"/>
             </g>
-            <g font-family="Impact, sans-serif" font-size="14" fill="#000" text-anchor="middle" font-weight="bold">
-              <text x="37" y="42">RIGO</text>
-              <text x="102" y="42">POP</text>
-              <text x="37" y="107">ART</text>
-              <text x="102" y="107">!</text>
+            <g font-family="Impact, sans-serif" font-size="22" fill="#1a1a1a" text-anchor="middle" font-weight="bold">
+              <text x="51" y="58">RIGO</text>
+              <text x="149" y="58">POP</text>
+              <text x="51" y="156">ART</text>
+              <text x="149" y="156">!</text>
             </g>
           </svg>
         `;
       }
 
-      // Partes de la cara por emoción
-      let leftEye, rightEye, mouth, extra = '';
-      let bodyBounce = '';
+      const face = this.getFaceParts(emotion);
+      const bodyAnim = emotion === 'excited' ? 'style="animation: rigoBounce 0.6s ease-in-out infinite;"' : '';
 
-      switch (emotion) {
-        case 'happy':
-          leftEye = `<path d="M 48 58 Q 54 50 60 58" fill="none" stroke="#1a1a1a" stroke-width="3.5" stroke-linecap="round"/>`;
-          rightEye = `<path d="M 80 58 Q 86 50 92 58" fill="none" stroke="#1a1a1a" stroke-width="3.5" stroke-linecap="round"/>`;
-          mouth = `<path d="M 60 78 Q 70 88 80 78" fill="#FF6B9D" stroke="#1a1a1a" stroke-width="2.5" stroke-linecap="round"/>`;
-          break;
+      const wavingArm = emotion === 'welcome'
+        ? `<g style="transform-origin: 150px 125px; animation: rigoWave 0.9s ease-in-out infinite;">
+             <path d="M 150 125 Q 165 105 170 85" fill="none" stroke="#1a1a1a" stroke-width="3.5" stroke-linecap="round"/>
+             <path d="M 150 125 Q 165 105 170 85" fill="none" class="rigo-skin-stroke" stroke-width="9" stroke-linecap="round" opacity="0.95"/>
+             <ellipse cx="172" cy="82" rx="10" ry="8" class="rigo-skin" stroke="#1a1a1a" stroke-width="3"/>
+             <path d="M 168 78 L 165 72 M 172 76 L 172 68 M 176 78 L 179 72" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"/>
+           </g>`
+        : '';
 
-        case 'excited':
-          leftEye = this.sparkleEye(54, 58);
-          rightEye = this.sparkleEye(86, 58);
-          mouth = `<ellipse cx="70" cy="82" rx="8" ry="6" fill="#FF6B9D" stroke="#1a1a1a" stroke-width="2.5"/>
-                   <path d="M 64 80 Q 70 76 76 80" fill="none" stroke="#fff" stroke-width="1.5"/>`;
-          bodyBounce = 'animation: rigoBounce 0.6s ease-in-out infinite;';
-          break;
+      const gameGlasses = emotion === 'game'
+        ? `<rect x="44" y="76" width="40" height="22" rx="4" fill="#1a1a1a"/>
+           <rect x="116" y="76" width="40" height="22" rx="4" fill="#1a1a1a"/>
+           <rect x="84" y="84" width="32" height="4" fill="#1a1a1a"/>
+           <rect x="50" y="80" width="8" height="6" fill="#fff" opacity="0.4"/>
+           <rect x="122" y="80" width="8" height="6" fill="#fff" opacity="0.4"/>`
+        : '';
 
-        case 'welcome':
-          leftEye = this.roundEye(54, 58);
-          rightEye = this.roundEye(86, 58);
-          mouth = `<path d="M 60 78 Q 70 86 80 78" fill="#FF6B9D" stroke="#1a1a1a" stroke-width="2.5" stroke-linecap="round"/>`;
-          // Manita saludando
-          extra = `<g style="transform-origin: 112px 70px; animation: rigoWave 1s ease-in-out infinite;">
-            <ellipse cx="118" cy="62" rx="9" ry="11" class="rigo-skin" stroke="#1a1a1a" stroke-width="3"/>
-            <circle cx="115" cy="58" r="2" fill="#1a1a1a"/>
-          </g>`;
-          break;
+      const questionMark = emotion === 'confused'
+        ? `<text x="165" y="40" font-family="Impact, sans-serif" font-size="32" fill="#FF6B9D" stroke="#1a1a1a" stroke-width="1.5" font-weight="bold">?</text>`
+        : '';
 
-        case 'confused':
-          leftEye = `<circle cx="54" cy="58" r="7" fill="#fff" stroke="#1a1a1a" stroke-width="2.5"/>
-                     <circle cx="52" cy="56" r="3" fill="#1a1a1a"/>`;
-          rightEye = `<circle cx="86" cy="56" r="5" fill="#fff" stroke="#1a1a1a" stroke-width="2.5"/>
-                      <circle cx="87" cy="57" r="2" fill="#1a1a1a"/>`;
-          mouth = `<path d="M 62 82 Q 68 78 72 82 Q 76 86 80 82" fill="none" stroke="#1a1a1a" stroke-width="2.5" stroke-linecap="round"/>`;
-          extra = `<text x="105" y="40" font-family="Impact, sans-serif" font-size="22" fill="#FF6B9D" stroke="#1a1a1a" stroke-width="1">?</text>`;
-          break;
+      const thoughtBubble = emotion === 'thinking'
+        ? `<circle cx="168" cy="50" r="10" fill="#fff" stroke="#1a1a1a" stroke-width="2.5"/>
+           <circle cx="185" cy="32" r="6" fill="#fff" stroke="#1a1a1a" stroke-width="2"/>`
+        : '';
 
-        case 'thinking':
-          leftEye = `<path d="M 48 58 L 60 58" stroke="#1a1a1a" stroke-width="3" stroke-linecap="round"/>`;
-          rightEye = this.roundEye(86, 58);
-          mouth = `<path d="M 62 82 L 78 80" stroke="#1a1a1a" stroke-width="2.5" stroke-linecap="round"/>`;
-          extra = `<circle cx="100" cy="30" r="8" fill="#fff" stroke="#1a1a1a" stroke-width="2"/>
-                   <circle cx="115" cy="20" r="5" fill="#fff" stroke="#1a1a1a" stroke-width="2"/>
-                   <text x="100" y="34" font-size="10" text-anchor="middle" font-weight="bold">💭</text>`;
-          break;
-
-        case 'sneaky':
-          leftEye = `<path d="M 48 58 Q 54 54 60 58" fill="none" stroke="#1a1a1a" stroke-width="3" stroke-linecap="round"/>`;
-          rightEye = `<path d="M 80 58 Q 86 54 92 58" fill="none" stroke="#1a1a1a" stroke-width="3" stroke-linecap="round"/>`;
-          mouth = `<path d="M 60 80 Q 70 84 82 78" fill="none" stroke="#1a1a1a" stroke-width="2.5" stroke-linecap="round"/>`;
-          break;
-
-        case 'sad':
-          leftEye = `<circle cx="54" cy="60" r="6" fill="#fff" stroke="#1a1a1a" stroke-width="2.5"/>
-                     <circle cx="54" cy="62" r="3" fill="#1a1a1a"/>
-                     <path d="M 50 72 Q 52 78 54 72" fill="#4FC3F7" stroke="#1a1a1a" stroke-width="1.5"/>`;
-          rightEye = `<circle cx="86" cy="60" r="6" fill="#fff" stroke="#1a1a1a" stroke-width="2.5"/>
-                      <circle cx="86" cy="62" r="3" fill="#1a1a1a"/>`;
-          mouth = `<path d="M 62 84 Q 70 78 78 84" fill="none" stroke="#1a1a1a" stroke-width="2.5" stroke-linecap="round"/>`;
-          break;
-
-        case 'game':
-          leftEye = `<rect x="45" y="52" width="22" height="14" rx="3" fill="#1a1a1a"/>
-                     <rect x="48" y="55" width="5" height="4" fill="#fff" opacity="0.6"/>`;
-          rightEye = `<rect x="73" y="52" width="22" height="14" rx="3" fill="#1a1a1a"/>
-                      <rect x="76" y="55" width="5" height="4" fill="#fff" opacity="0.6"/>`;
-          mouth = `<path d="M 60 80 Q 70 86 80 80" fill="#FF6B9D" stroke="#1a1a1a" stroke-width="2.5" stroke-linecap="round"/>`;
-          extra = `<rect x="65" y="50" width="12" height="3" fill="#1a1a1a"/>`;
-          break;
-
-        case 'love':
-          leftEye = `<path d="M 54 52 C 50 48, 44 52, 48 58 L 54 64 L 60 58 C 64 52, 58 48, 54 52 Z" fill="#FF3366" stroke="#1a1a1a" stroke-width="2"/>`;
-          rightEye = `<path d="M 86 52 C 82 48, 76 52, 80 58 L 86 64 L 92 58 C 96 52, 90 48, 86 52 Z" fill="#FF3366" stroke="#1a1a1a" stroke-width="2"/>`;
-          mouth = `<path d="M 62 78 Q 70 86 78 78" fill="#FF6B9D" stroke="#1a1a1a" stroke-width="2.5" stroke-linecap="round"/>`;
-          break;
-
-        case 'neutral':
-        default:
-          leftEye = this.roundEye(54, 58);
-          rightEye = this.roundEye(86, 58);
-          mouth = `<path d="M 64 80 Q 70 84 76 80" fill="none" stroke="#1a1a1a" stroke-width="2.5" stroke-linecap="round"/>`;
-      }
+      const tear = emotion === 'sad'
+        ? `<path d="M 52 108 Q 54 118 56 108 Q 58 118 56 122 Q 52 124 50 120 Z" fill="#4FC3F7" stroke="#1a1a1a" stroke-width="1.5"/>`
+        : '';
 
       return `
-        <svg viewBox="0 0 140 140" width="100%" height="100%" style="${bodyBounce}">
+        <svg viewBox="0 0 200 200" width="100%" height="100%" ${bodyAnim}>
           <defs>
-            <radialGradient id="cheekGrad" cx="50%" cy="50%">
+            <radialGradient id="cheek" cx="50%" cy="50%">
               <stop offset="0%" stop-color="#FF6B9D" stop-opacity="0.9"/>
               <stop offset="100%" stop-color="#FF6B9D" stop-opacity="0"/>
             </radialGradient>
+            <radialGradient id="belly" cx="50%" cy="30%">
+              <stop offset="0%" stop-color="#D4F5A8" stop-opacity="0.9"/>
+              <stop offset="100%" stop-color="#B8E986" stop-opacity="0.6"/>
+            </radialGradient>
           </defs>
 
-          <!-- Cola enrollada (detrás del cuerpo) -->
-          <path d="M 25 90 Q 10 95 12 110 Q 14 125 28 122 Q 40 119 38 108"
-                fill="none" stroke="#1a1a1a" stroke-width="3" stroke-linecap="round"/>
-          <path d="M 25 90 Q 10 95 12 110 Q 14 125 28 122 Q 40 119 38 108"
-                fill="none" class="rigo-skin-stroke" stroke-width="8" stroke-linecap="round" opacity="0.95"/>
+          <!-- COLA ENROLLADA -->
+          <path d="M 55 150 Q 35 150, 25 135 Q 15 120, 20 105 Q 25 92, 38 92 Q 48 92, 48 102 Q 48 108, 42 108 Q 37 108, 37 103"
+                fill="none" stroke="#1a1a1a" stroke-width="4" stroke-linecap="round"/>
+          <path d="M 55 150 Q 35 150, 25 135 Q 15 120, 20 105 Q 25 92, 38 92 Q 48 92, 48 102 Q 48 108, 42 108 Q 37 108, 37 103"
+                fill="none" class="rigo-skin-stroke" stroke-width="12" stroke-linecap="round" opacity="0.95"/>
+          <g stroke="#1a1a1a" stroke-width="1.2" stroke-linecap="round" opacity="0.5">
+            <path d="M 50 148 Q 48 152 46 150" fill="none"/>
+            <path d="M 38 144 Q 35 147 33 144" fill="none"/>
+            <path d="M 28 130 Q 25 130 24 127" fill="none"/>
+          </g>
 
-          <!-- Patitas -->
-          <ellipse cx="48" cy="118" rx="10" ry="7" class="rigo-skin" stroke="#1a1a1a" stroke-width="2.5"/>
-          <ellipse cx="92" cy="118" rx="10" ry="7" class="rigo-skin" stroke="#1a1a1a" stroke-width="2.5"/>
+          <!-- PATAS TRASERAS -->
+          <ellipse cx="70" cy="168" rx="14" ry="9" class="rigo-skin" stroke="#1a1a1a" stroke-width="3"/>
+          <path d="M 60 170 L 58 175 M 66 172 L 65 178 M 72 172 L 72 178" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"/>
+          <ellipse cx="130" cy="168" rx="14" ry="9" class="rigo-skin" stroke="#1a1a1a" stroke-width="3"/>
+          <path d="M 120 172 L 120 178 M 128 172 L 128 178 M 136 170 L 138 175" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"/>
 
-          <!-- Cuerpo redondito (pera invertida / gota tierna) -->
-          <path d="M 70 22
-                   C 42 22, 28 48, 30 72
-                   C 32 100, 48 118, 70 118
-                   C 92 118, 108 100, 110 72
-                   C 112 48, 98 22, 70 22 Z"
+          <!-- CUERPO -->
+          <path d="M 55 135 Q 50 160, 75 165 Q 100 170, 125 165 Q 150 160, 145 135 Q 145 125, 135 118 L 65 118 Q 55 125, 55 135 Z"
+                class="rigo-skin" stroke="#1a1a1a" stroke-width="3.5"/>
+          <ellipse cx="100" cy="150" rx="28" ry="15" fill="url(#belly)"/>
+          <g stroke="#1a1a1a" stroke-width="1" stroke-linecap="round" opacity="0.3" fill="none">
+            <path d="M 82 145 Q 100 148 118 145"/>
+            <path d="M 80 152 Q 100 156 120 152"/>
+            <path d="M 82 159 Q 100 162 118 159"/>
+          </g>
+
+          <!-- PATITAS DELANTERAS -->
+          <ellipse cx="55" cy="150" rx="9" ry="12" class="rigo-skin" stroke="#1a1a1a" stroke-width="3"/>
+          <path d="M 50 158 L 48 163 M 55 160 L 55 165 M 60 158 L 62 163" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"/>
+          <ellipse cx="145" cy="150" rx="9" ry="12" class="rigo-skin" stroke="#1a1a1a" stroke-width="3"/>
+          <path d="M 140 158 L 138 163 M 145 160 L 145 165 M 150 158 L 152 163" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"/>
+
+          ${wavingArm}
+
+          <!-- CRESTA DENTADA -->
+          <path d="M 70 55 L 78 38 L 85 52 L 92 32 L 100 50 L 108 30 L 116 50 L 123 38 L 130 55 Z"
+                class="rigo-skin" stroke="#1a1a1a" stroke-width="3" stroke-linejoin="round"/>
+
+          <!-- CABEZA -->
+          <path d="M 100 45 C 55 45, 40 80, 45 110 C 50 135, 70 135, 100 135 C 130 135, 150 135, 155 110 C 160 80, 145 45, 100 45 Z"
                 class="rigo-skin" stroke="#1a1a1a" stroke-width="3.5"/>
 
-          <!-- Brillo superior (highlight kawaii) -->
-          <ellipse cx="58" cy="38" rx="12" ry="6" fill="#fff" opacity="0.35"/>
+          <!-- MOTITAS -->
+          <g fill="#FFE066" opacity="0.7">
+            <circle cx="70" cy="60" r="2"/>
+            <circle cx="85" cy="50" r="1.5"/>
+            <circle cx="130" cy="58" r="2"/>
+            <circle cx="115" cy="48" r="1.5"/>
+            <circle cx="98" cy="65" r="1.5"/>
+            <circle cx="90" cy="140" r="1.5"/>
+            <circle cx="115" cy="142" r="2"/>
+            <circle cx="135" cy="155" r="1.5"/>
+          </g>
+          <g fill="#52BF48" opacity="0.45">
+            <circle cx="78" cy="72" r="2"/>
+            <circle cx="122" cy="68" r="2"/>
+            <circle cx="100" cy="55" r="1.5"/>
+            <circle cx="75" cy="130" r="1.5"/>
+            <circle cx="125" cy="132" r="1.5"/>
+            <circle cx="65" cy="145" r="1.5"/>
+          </g>
 
-          <!-- Cresta suave -->
-          <path d="M 60 22 Q 65 15 70 22 Q 75 15 80 22"
-                fill="none" stroke="#1a1a1a" stroke-width="2.5" stroke-linecap="round"/>
+          <!-- OJOS -->
+          ${face.leftEye}
+          ${face.rightEye}
 
-          <!-- Mejillas rosadas kawaii -->
-          <ellipse cx="42" cy="78" rx="8" ry="6" fill="url(#cheekGrad)"/>
-          <ellipse cx="98" cy="78" rx="8" ry="6" fill="url(#cheekGrad)"/>
+          <!-- MEJILLAS -->
+          <ellipse cx="48" cy="108" rx="11" ry="7" fill="url(#cheek)"/>
+          <ellipse cx="152" cy="108" rx="11" ry="7" fill="url(#cheek)"/>
 
-          <!-- Ojos -->
-          ${leftEye}
-          ${rightEye}
+          <!-- FOSAS NASALES -->
+          <circle cx="94" cy="108" r="1.5" fill="#1a1a1a"/>
+          <circle cx="106" cy="108" r="1.5" fill="#1a1a1a"/>
 
-          <!-- Boquita -->
-          ${mouth}
+          ${face.mouth}
+          ${gameGlasses}
+          ${questionMark}
+          ${thoughtBubble}
+          ${tear}
 
-          <!-- Elementos extra según emoción -->
-          ${extra}
+          <!-- BRILLO SUPERIOR -->
+          <ellipse cx="85" cy="58" rx="14" ry="6" fill="#fff" opacity="0.3"/>
         </svg>
       `;
     }
 
-    roundEye(cx, cy) {
+    getFaceParts(emotion) {
+      // Ojos laterales salientes como la referencia
+      const LE_CX = 55, LE_CY = 88;
+      const RE_CX = 145, RE_CY = 88;
+
+      let leftEye, rightEye, mouth;
+
+      switch (emotion) {
+        case 'happy':
+          leftEye = this.happyEye(LE_CX, LE_CY);
+          rightEye = this.happyEye(RE_CX, RE_CY);
+          mouth = `<path d="M 85 122 Q 100 138 115 122" fill="#FF6B9D" stroke="#1a1a1a" stroke-width="3" stroke-linecap="round"/>`;
+          break;
+        case 'excited':
+          leftEye = this.sparkleEye(LE_CX, LE_CY);
+          rightEye = this.sparkleEye(RE_CX, RE_CY);
+          mouth = `<ellipse cx="100" cy="126" rx="13" ry="9" fill="#FF3366" stroke="#1a1a1a" stroke-width="3"/>
+                   <path d="M 90 124 Q 100 118 110 124" fill="none" stroke="#FFB8CC" stroke-width="2"/>`;
+          break;
+        case 'welcome':
+          leftEye = this.bigEye(LE_CX, LE_CY);
+          rightEye = this.bigEye(RE_CX, RE_CY);
+          mouth = `<path d="M 85 122 Q 100 134 115 122" fill="#FF6B9D" stroke="#1a1a1a" stroke-width="3" stroke-linecap="round"/>`;
+          break;
+        case 'confused':
+          leftEye = this.bigEye(LE_CX, LE_CY, -2);
+          rightEye = this.smallEye(RE_CX, RE_CY);
+          mouth = `<path d="M 88 124 Q 94 119 100 124 Q 106 129 112 124" fill="none" stroke="#1a1a1a" stroke-width="3" stroke-linecap="round"/>`;
+          break;
+        case 'thinking':
+          leftEye = `<ellipse cx="${LE_CX}" cy="${LE_CY}" rx="18" ry="17" class="rigo-skin" stroke="#1a1a1a" stroke-width="3"/>
+                     <path d="M 44 88 L 66 90" stroke="#1a1a1a" stroke-width="3.5" stroke-linecap="round"/>`;
+          rightEye = this.bigEye(RE_CX, RE_CY, 0, 2);
+          mouth = `<path d="M 90 126 L 112 122" fill="none" stroke="#1a1a1a" stroke-width="3" stroke-linecap="round"/>`;
+          break;
+        case 'sneaky':
+          leftEye = `<ellipse cx="${LE_CX}" cy="${LE_CY}" rx="18" ry="17" class="rigo-skin" stroke="#1a1a1a" stroke-width="3"/>
+                     <path d="M 42 88 Q 55 80 68 88" fill="none" stroke="#1a1a1a" stroke-width="3.5" stroke-linecap="round"/>
+                     <path d="M 47 90 Q 55 86 63 90" fill="#1a1a1a" stroke="none"/>`;
+          rightEye = `<ellipse cx="${RE_CX}" cy="${RE_CY}" rx="18" ry="17" class="rigo-skin" stroke="#1a1a1a" stroke-width="3"/>
+                      <path d="M 132 88 Q 145 80 158 88" fill="none" stroke="#1a1a1a" stroke-width="3.5" stroke-linecap="round"/>
+                      <path d="M 137 90 Q 145 86 153 90" fill="#1a1a1a" stroke="none"/>`;
+          mouth = `<path d="M 85 124 Q 100 132 118 118" fill="none" stroke="#1a1a1a" stroke-width="3" stroke-linecap="round"/>`;
+          break;
+        case 'sad':
+          leftEye = this.bigEye(LE_CX, LE_CY + 2, 0, 3);
+          rightEye = this.bigEye(RE_CX, RE_CY + 2, 0, 3);
+          mouth = `<path d="M 85 130 Q 100 120 115 130" fill="none" stroke="#1a1a1a" stroke-width="3" stroke-linecap="round"/>`;
+          break;
+        case 'game':
+          leftEye = `<ellipse cx="${LE_CX}" cy="${LE_CY}" rx="18" ry="17" class="rigo-skin" stroke="#1a1a1a" stroke-width="3"/>`;
+          rightEye = `<ellipse cx="${RE_CX}" cy="${RE_CY}" rx="18" ry="17" class="rigo-skin" stroke="#1a1a1a" stroke-width="3"/>`;
+          mouth = `<path d="M 85 122 Q 100 134 115 122" fill="#FF6B9D" stroke="#1a1a1a" stroke-width="3" stroke-linecap="round"/>`;
+          break;
+        case 'love':
+          leftEye = this.heartEye(LE_CX, LE_CY);
+          rightEye = this.heartEye(RE_CX, RE_CY);
+          mouth = `<path d="M 85 122 Q 100 136 115 122" fill="#FF6B9D" stroke="#1a1a1a" stroke-width="3" stroke-linecap="round"/>`;
+          break;
+        case 'neutral':
+        default:
+          leftEye = this.bigEye(LE_CX, LE_CY);
+          rightEye = this.bigEye(RE_CX, RE_CY);
+          mouth = `<path d="M 90 124 Q 100 130 110 124" fill="none" stroke="#1a1a1a" stroke-width="3" stroke-linecap="round"/>`;
+      }
+      return { leftEye, rightEye, mouth };
+    }
+
+    // Ojo grande kawaii con párpado saliente (estilo camaleón real)
+    bigEye(cx, cy, pupilOffsetX = 0, pupilOffsetY = 0) {
       return `
-        <circle cx="${cx}" cy="${cy}" r="9" fill="#fff" stroke="#1a1a1a" stroke-width="2.5"/>
-        <circle cx="${cx}" cy="${cy + 1}" r="6" fill="#1a1a1a"/>
-        <circle cx="${cx - 2}" cy="${cy - 2}" r="2.5" fill="#fff"/>
-        <circle cx="${cx + 3}" cy="${cy + 3}" r="1" fill="#fff"/>
+        <g>
+          <ellipse cx="${cx}" cy="${cy}" rx="18" ry="17" class="rigo-skin" stroke="#1a1a1a" stroke-width="3"/>
+          <circle cx="${cx}" cy="${cy}" r="13" fill="#fff" stroke="#1a1a1a" stroke-width="2.5"/>
+          <circle cx="${cx + pupilOffsetX}" cy="${cy + pupilOffsetY}" r="9" fill="#1a1a1a"/>
+          <circle cx="${cx - 3 + pupilOffsetX}" cy="${cy - 3 + pupilOffsetY}" r="3.5" fill="#fff"/>
+          <circle cx="${cx + 4 + pupilOffsetX}" cy="${cy + 4 + pupilOffsetY}" r="1.5" fill="#fff"/>
+        </g>
+      `;
+    }
+
+    smallEye(cx, cy) {
+      return `
+        <g>
+          <ellipse cx="${cx}" cy="${cy}" rx="14" ry="13" class="rigo-skin" stroke="#1a1a1a" stroke-width="3"/>
+          <circle cx="${cx}" cy="${cy}" r="8" fill="#fff" stroke="#1a1a1a" stroke-width="2.5"/>
+          <circle cx="${cx}" cy="${cy}" r="5" fill="#1a1a1a"/>
+          <circle cx="${cx - 1.5}" cy="${cy - 1.5}" r="2" fill="#fff"/>
+        </g>
+      `;
+    }
+
+    happyEye(cx, cy) {
+      return `
+        <g>
+          <ellipse cx="${cx}" cy="${cy}" rx="18" ry="17" class="rigo-skin" stroke="#1a1a1a" stroke-width="3"/>
+          <path d="M ${cx - 10} ${cy + 2} Q ${cx} ${cy - 10} ${cx + 10} ${cy + 2}"
+                fill="none" stroke="#1a1a1a" stroke-width="3.5" stroke-linecap="round"/>
+        </g>
       `;
     }
 
     sparkleEye(cx, cy) {
       return `
-        <circle cx="${cx}" cy="${cy}" r="10" fill="#fff" stroke="#1a1a1a" stroke-width="2.5"/>
-        <circle cx="${cx}" cy="${cy}" r="7" fill="#1a1a1a"/>
-        <path d="M ${cx - 3} ${cy - 4} L ${cx - 1} ${cy - 1} L ${cx + 2} ${cy - 3} L ${cx} ${cy + 1} L ${cx + 3} ${cy + 3} L ${cx - 1} ${cy + 2} L ${cx - 4} ${cy + 4} L ${cx - 2} ${cy} Z" fill="#fff"/>
+        <g>
+          <ellipse cx="${cx}" cy="${cy}" rx="18" ry="17" class="rigo-skin" stroke="#1a1a1a" stroke-width="3"/>
+          <circle cx="${cx}" cy="${cy}" r="13" fill="#fff" stroke="#1a1a1a" stroke-width="2.5"/>
+          <circle cx="${cx}" cy="${cy}" r="10" fill="#1a1a1a"/>
+          <path d="M ${cx - 4} ${cy - 5} L ${cx - 1} ${cy - 1} L ${cx + 4} ${cy - 4}
+                   L ${cx + 1} ${cy + 2} L ${cx + 5} ${cy + 5} L ${cx} ${cy + 3}
+                   L ${cx - 5} ${cy + 6} L ${cx - 2} ${cy + 1} Z" fill="#fff"/>
+          <circle cx="${cx + 5}" cy="${cy + 5}" r="1.5" fill="#fff"/>
+        </g>
+      `;
+    }
+
+    heartEye(cx, cy) {
+      return `
+        <g>
+          <ellipse cx="${cx}" cy="${cy}" rx="18" ry="17" class="rigo-skin" stroke="#1a1a1a" stroke-width="3"/>
+          <path d="M ${cx} ${cy + 6}
+                   C ${cx - 10} ${cy - 2}, ${cx - 12} ${cy - 8}, ${cx - 6} ${cy - 8}
+                   C ${cx - 2} ${cy - 8}, ${cx} ${cy - 4}, ${cx} ${cy - 2}
+                   C ${cx} ${cy - 4}, ${cx + 2} ${cy - 8}, ${cx + 6} ${cy - 8}
+                   C ${cx + 12} ${cy - 8}, ${cx + 10} ${cy - 2}, ${cx} ${cy + 6} Z"
+                fill="#FF3366" stroke="#1a1a1a" stroke-width="2"/>
+          <circle cx="${cx - 4}" cy="${cy - 5}" r="1.5" fill="#fff"/>
+        </g>
       `;
     }
 
@@ -287,7 +428,6 @@
             font-family: 'Comic Sans MS', 'Chalkboard SE', system-ui, sans-serif;
             touch-action: none;
           }
-
           #rigo-wrapper {
             position: relative;
             width: 140px;
@@ -296,58 +436,44 @@
             filter: drop-shadow(3px 4px 0 rgba(0,0,0,0.25));
             transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
           }
-
           #rigo-wrapper.dragging {
             cursor: grabbing;
             transition: none;
             filter: drop-shadow(6px 8px 0 rgba(0,0,0,0.35));
           }
+          #rigo-wrapper:hover:not(.dragging) { transform: scale(1.08) rotate(-3deg); }
+          #rigo-wrapper:active:not(.dragging) { transform: scale(0.95); }
 
-          #rigo-wrapper:hover:not(.dragging) {
-            transform: scale(1.08) rotate(-3deg);
-          }
-
-          #rigo-wrapper:active:not(.dragging) {
-            transform: scale(0.95);
-          }
-
-          /* Animación ultra lenta de cambio de color de piel (60s por color) */
           @keyframes popArtSkin {
             0%   { fill: #7ED957; }
-            14%  { fill: #FFDE59; }
-            28%  { fill: #FF914D; }
-            42%  { fill: #FF6B9D; }
-            57%  { fill: #B794F6; }
-            71%  { fill: #63C5DA; }
-            85%  { fill: #5AC8A8; }
+            14%  { fill: #5AC850; }
+            28%  { fill: #8FDB5F; }
+            42%  { fill: #6BCF4A; }
+            57%  { fill: #7FD856; }
+            71%  { fill: #52BF48; }
+            85%  { fill: #85D95B; }
             100% { fill: #7ED957; }
           }
           @keyframes popArtStroke {
             0%   { stroke: #7ED957; }
-            14%  { stroke: #FFDE59; }
-            28%  { stroke: #FF914D; }
-            42%  { stroke: #FF6B9D; }
-            57%  { stroke: #B794F6; }
-            71%  { stroke: #63C5DA; }
-            85%  { stroke: #5AC8A8; }
+            14%  { stroke: #5AC850; }
+            28%  { stroke: #8FDB5F; }
+            42%  { stroke: #6BCF4A; }
+            57%  { stroke: #7FD856; }
+            71%  { stroke: #52BF48; }
+            85%  { stroke: #85D95B; }
             100% { stroke: #7ED957; }
           }
-          .rigo-skin {
-            animation: popArtSkin 420s infinite linear;
-            fill: #7ED957;
-          }
-          .rigo-skin-stroke {
-            animation: popArtStroke 420s infinite linear;
-            stroke: #7ED957;
-          }
+          .rigo-skin { animation: popArtSkin 180s infinite linear; fill: #7ED957; }
+          .rigo-skin-stroke { animation: popArtStroke 180s infinite linear; stroke: #7ED957; }
 
           @keyframes rigoBounce {
             0%, 100% { transform: translateY(0); }
             50%      { transform: translateY(-6px); }
           }
           @keyframes rigoWave {
-            0%, 100% { transform: rotate(-15deg); }
-            50%      { transform: rotate(15deg); }
+            0%, 100% { transform: rotate(-20deg); }
+            50%      { transform: rotate(20deg); }
           }
           @keyframes rigoIdle {
             0%, 100% { transform: translateY(0) rotate(0); }
@@ -361,10 +487,9 @@
             pointer-events: none;
           }
 
-          /* Globo de texto kawaii */
           #speech-bubble {
             position: absolute;
-            bottom: 115%;
+            bottom: 110%;
             right: 10%;
             background: #fff;
             border: 3px solid #1a1a1a;
@@ -375,7 +500,7 @@
             color: #1a1a1a;
             line-height: 1.3;
             width: max-content;
-            max-width: 180px;
+            max-width: 200px;
             text-align: center;
             box-shadow: 3px 4px 0 #1a1a1a;
             opacity: 0;
@@ -384,7 +509,6 @@
             pointer-events: none;
             white-space: normal;
           }
-
           #speech-bubble::after {
             content: '';
             position: absolute;
@@ -407,25 +531,15 @@
             border-top-color: #1a1a1a;
             border-bottom: 0;
           }
-
           #speech-bubble.show {
             opacity: 1;
             transform: translateY(0) scale(1);
           }
 
           @media (max-width: 480px) {
-            :host {
-              bottom: 10px;
-              right: 10px;
-            }
-            #rigo-wrapper {
-              width: 110px;
-              height: 110px;
-            }
-            #speech-bubble {
-              font-size: 12px;
-              max-width: 150px;
-            }
+            :host { bottom: 10px; right: 10px; }
+            #rigo-wrapper { width: 110px; height: 110px; }
+            #speech-bubble { font-size: 12px; max-width: 160px; }
           }
         </style>
 
@@ -440,39 +554,29 @@
     setupInteractions() {
       const wrapper = this.shadowRoot.getElementById('rigo-wrapper');
 
-      // --- Arrastre unificado (mouse + touch) ---
       const onDown = (e) => {
         this.isDragging = true;
         this.hasMoved = false;
         wrapper.classList.add('dragging');
-
         const point = e.touches ? e.touches[0] : e;
         const rect = this.getBoundingClientRect();
         this.dragOffsetX = point.clientX - rect.left;
         this.dragOffsetY = point.clientY - rect.top;
-
         e.preventDefault();
       };
 
       const onMove = (e) => {
         if (!this.isDragging) return;
         this.hasMoved = true;
-
         const point = e.touches ? e.touches[0] : e;
         const x = point.clientX - this.dragOffsetX;
         const y = point.clientY - this.dragOffsetY;
-
-        // Mantener dentro del viewport
         const maxX = window.innerWidth - this.offsetWidth;
         const maxY = window.innerHeight - this.offsetHeight;
-        const clampedX = Math.max(0, Math.min(x, maxX));
-        const clampedY = Math.max(0, Math.min(y, maxY));
-
-        this.style.left = clampedX + 'px';
-        this.style.top = clampedY + 'px';
+        this.style.left = Math.max(0, Math.min(x, maxX)) + 'px';
+        this.style.top = Math.max(0, Math.min(y, maxY)) + 'px';
         this.style.right = 'auto';
         this.style.bottom = 'auto';
-
         e.preventDefault();
       };
 
@@ -480,49 +584,39 @@
         if (!this.isDragging) return;
         this.isDragging = false;
         wrapper.classList.remove('dragging');
-
-        if (this.hasMoved) {
-          this.savePosition();
-        } else {
-          this.handleTap();
-        }
+        if (this.hasMoved) this.savePosition();
+        else this.handleTap();
       };
 
       wrapper.addEventListener('mousedown', onDown);
       window.addEventListener('mousemove', onMove);
       window.addEventListener('mouseup', onUp);
-
       wrapper.addEventListener('touchstart', onDown, { passive: false });
       window.addEventListener('touchmove', onMove, { passive: false });
       window.addEventListener('touchend', onUp);
     }
 
     handleTap() {
-      // 0.8% easter egg Warhol
       if (Math.random() < 0.008) {
         this.setEmotion('easterEgg');
         this.say("¡Modo POP ART desbloqueado!", 3500);
         setTimeout(() => this.setEmotion('neutral'), 3500);
         return;
       }
-
       this.setEmotion('sneaky');
-      const hint = HINT_MESSAGES[Math.floor(Math.random() * HINT_MESSAGES.length)];
-      this.say(hint, 3500);
+      const hint = this.pickMessage(HINT_MESSAGES);
+      this.say(hint, 4000);
       this.dispatchEvent(new CustomEvent('rigo-hint-requested', {
-        bubbles: true,
-        composed: true,
-        detail: { emotion: this.currentEmotion }
+        bubbles: true, composed: true,
+        detail: { hint, emotion: this.currentEmotion }
       }));
-      setTimeout(() => this.setEmotion('neutral'), 3500);
+      setTimeout(() => this.setEmotion('neutral'), 4000);
     }
 
-    // ======================= POSICIÓN PERSISTENTE =======================
     savePosition() {
       try {
         localStorage.setItem('rigo_pos', JSON.stringify({
-          left: this.style.left,
-          top: this.style.top
+          left: this.style.left, top: this.style.top
         }));
       } catch (e) { /* silencioso */ }
     }
@@ -541,7 +635,6 @@
       } catch (e) { /* silencioso */ }
     }
 
-    // ======================= EMOCIONES =======================
     setEmotion(emotion) {
       if (!EMOTIONS.includes(emotion)) emotion = 'neutral';
       this.currentEmotion = emotion;
@@ -549,13 +642,11 @@
       if (container) container.innerHTML = this.getSVG(emotion);
     }
 
-    // ======================= MENSAJES =======================
     say(text, duration = 4000) {
       const bubble = this.shadowRoot.getElementById('speech-bubble');
       if (!bubble) return;
       bubble.textContent = text;
       bubble.classList.add('show');
-
       if (this.bubbleTimer) clearTimeout(this.bubbleTimer);
       this.bubbleTimer = setTimeout(() => {
         bubble.classList.remove('show');
@@ -564,15 +655,15 @@
 
     startRandomMessages() {
       const schedule = () => {
-        const delay = 45000 + Math.random() * 60000; // 45s - 105s
+        const delay = 45000 + Math.random() * 60000;
         this.randomTimer = setTimeout(() => {
           const bubble = this.shadowRoot.getElementById('speech-bubble');
           if (bubble && !bubble.classList.contains('show') && !this.isDragging) {
-            const msg = RANDOM_MESSAGES[Math.floor(Math.random() * RANDOM_MESSAGES.length)];
-            const prevEmotion = this.currentEmotion;
+            const msg = this.pickMessage(RANDOM_MESSAGES);
+            const prev = this.currentEmotion;
             this.setEmotion('happy');
             this.say(msg, 3500);
-            setTimeout(() => this.setEmotion(prevEmotion), 3500);
+            setTimeout(() => this.setEmotion(prev), 3500);
           }
           schedule();
         }, delay);
@@ -582,19 +673,21 @@
 
     startBlinking() {
       this.blinkTimer = setInterval(() => {
-        if (this.currentEmotion !== 'neutral' && this.currentEmotion !== 'happy') return;
+        if (!['neutral', 'happy', 'welcome'].includes(this.currentEmotion)) return;
         const svg = this.shadowRoot.querySelector('#svg-container svg');
         if (!svg) return;
-        svg.style.transition = 'transform 0.1s';
-        const eyes = svg.querySelectorAll('circle[r="9"], circle[r="6"]');
-        eyes.forEach(e => e.style.transform = 'scaleY(0.1)');
-        setTimeout(() => {
-          eyes.forEach(e => e.style.transform = '');
-        }, 140);
+        const eyes = svg.querySelectorAll('circle[r="13"]');
+        eyes.forEach(e => { e.style.transform = 'scaleY(0.1)'; e.style.transformOrigin = 'center'; });
+        setTimeout(() => { eyes.forEach(e => e.style.transform = ''); }, 140);
       }, 4500 + Math.random() * 3000);
     }
 
     // ======================= API PÚBLICA =======================
+    setGrade(grade) {
+      this.grade = grade || null;
+      this.setAttribute('grade', grade || '');
+    }
+
     welcome() {
       this.setEmotion('welcome');
       this.say("¡Hola! Soy Rigo, tu compañero de estudio. Escribe tu NIE", 7000);
@@ -629,7 +722,6 @@
 
   customElements.define('rigo-mascot', RigoMascot);
 
-  // Referencia global fácil
   window.addEventListener('DOMContentLoaded', () => {
     window.rigo = document.querySelector('rigo-mascot');
   });
