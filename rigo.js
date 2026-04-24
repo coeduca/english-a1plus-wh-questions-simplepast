@@ -50,23 +50,25 @@
     { text: "Una pista: lee despacio", grade: null },
     { text: "Confía en tu primera idea", grade: null },
     { text: "¿Ya intentaste? ¡Tú puedes!", grade: null },
-    { text: "Shhh no le digas al teacher Eliseo", grade: null },
+    { text: "Shhh no le digas al teacher Eliseo. pero la respuesta del ejercicio", grade: null },
     { text: "Que Dios te ayude porque yo no", grade: null },
     { text: "La respuesta está en tu corazón", grade: null },
     { text: "Deja de tocarme o llamo a mi abogado", grade: null },
     { text: "Ya ni le muevas, no sé inglés", grade: null },
     { text: "Esto es culpa de Darwin", grade: ["Noveno"] },
     { text: "¿Todavía no has terminado?", grade: null },
-    { text: "Diosguarde, yo ya hubiera terminado", grade: null },
+    { text: "Diocuarde, yo ya hubiera terminado", grade: null },
     { text: "¿Ya viste el nuevo capítulo de la Rosa de Guadalupe?", grade: null },
-    { text: "Google Translate está llorando", grade: null },
+    { text: "El diccionario de Inglés está llorando", grade: null },
     { text: "Si fallas, te convierto en sopa de letras", grade: null },
     { text: "Respira, no es cálculo", grade: null },
-    { text: "El inglés es como el mole: con paciencia", grade: null },
+    { text: "El inglés es como yo: bonito", grade: null },
     { text: "Yo solo soy un camaleón, no un traductor", grade: null },
     { text: "Mejor pregúntale al Wilmer", grade: ["Segundo Año"] },
     { text: "Esta pregunta la sabe hasta mi abuela", grade: null },
-    { text: "¿Y si mejor estudias? (broma, sigue)", grade: null }
+    { text: "¿Y si mejor estudias? (broma XD)", grade: null },
+    { text: "Que ya sea recreo please!", grade: null },
+    { text: "No, ningún hello ni ningún afternoon", grade: null }
   ];
 
   const CHEER_MESSAGES = [
