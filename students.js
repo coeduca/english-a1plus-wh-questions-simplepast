@@ -54,7 +54,7 @@ const STUDENTS = {
   "3167629":  { name: "Keren Portillo", grade: "Primer Ano" }, "19967163": { name: "Maria Jose", grade: "Primer Ano" },
   "4210259":  { name: "Kennedy Ramirez", grade: "Primer Ano" }, "4210276":  { name: "Fernanda Rivas", grade: "Primer Ano" },
   "20062499": { name: "Wilian Rivera", grade: "Primer Ano" }, "6954866":  { name: "Erika Rodriguez", grade: "Primer Ano" },
-  "4210263":  { name: "Isaias Romero", grade: "Primer Ano" },
+  "4210263":  { name: "Isaias Romero", grade: "Primer Ano" }, "19959332":  { name: "Erika Maricela", grade: "Primer Ano" },
 
   // SEGUNDO AÑO DE BACHILLERATO
   "4210279":  { name: "Jose Maria Barrera", grade: "Segundo Ano" }, "4210254":  { name: "Abel Barrera", grade: "Segundo Ano" },
